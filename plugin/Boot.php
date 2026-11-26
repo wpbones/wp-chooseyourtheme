@@ -48,9 +48,6 @@ final class Boot
 
   public static function init(): void
   {
-    // WP Bones loads the text domain on init as well, later; the widget is registered before it.
-    load_plugin_textdomain('wp-chooseyourtheme', false, dirname(plugin_basename(dirname(__DIR__) . '/wp-chooseyourtheme.php')) . '/languages');
-
     Shortcode::register();
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/wp-chooseyourtheme",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Let your visitors choose which of your installed themes they see the site with.",
   "private": true,
   "license": "GPL-2.0-or-later",

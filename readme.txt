@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate/?hosted_button_id=TBPD4R78VDMCJ
 Tags: theme, switcher, visitors, block, widget
 Requires at least: 6.6
 Tested up to: 7.2
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -106,6 +106,10 @@ Yes! Please submit feature requests at [the support forum](https://wordpress.org
 Yes! Please report bugs at [the support forum](https://wordpress.org/support/plugin/wp-chooseyourtheme/).
 
 ## Changelog
+
+### 1.1.1
+
+* Translations load through WP Bones 3.4.1, which reads the plugin's `Text Domain` and `Domain Path`; the plugin no longer loads them itself. The `Domain Path` header now has the leading slash WordPress documents.
 
 ### 1.1.0
 

@@ -4,7 +4,7 @@
  * Plugin Name: WP Choose Your Theme
  * Plugin URI: https://github.com/wpbones/wp-chooseyourtheme
  * Description: Let your visitors choose which of your installed themes they see the site with: a dropdown, a list or a single "next theme" link, by template tag, shortcode or widget.
- * Version: 1.1.0
+ * Version: 1.1.1
  * Requires at least: 6.6
  * Requires PHP: 8.1
  * Author: Giovambattista Fazioli
@@ -12,7 +12,7 @@
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: wp-chooseyourtheme
- * Domain Path: languages
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {
