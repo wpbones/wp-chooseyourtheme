@@ -53,6 +53,10 @@
     {
       "step": "runPHP",
       "code": "<?php\nrequire '/wordpress/wp-load.php';\nupdate_option('wp_chooseyourtheme_settings', ['allowed_themes' => ['twentytwentyfour', 'twentytwentythree'], 'cookie_days' => 30]);\n$content = '<!-- wp:paragraph --><p>This site comes in three looks. Pick one: your browser remembers it, and the site stays as it is for everyone else.</p><!-- /wp:paragraph -->'\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">A dropdown</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"menu\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">A list</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"list\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">One link to the next look</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"roll\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:paragraph --><p>Which themes visitors may choose: Appearance &gt; WP Choose Your Theme.</p><!-- /wp:paragraph -->';\nwp_insert_post(['post_type' => 'page', 'post_title' => 'Pick a look', 'post_name' => 'pick-a-look', 'post_content' => $content, 'post_status' => 'publish']);\nflush_rewrite_rules();\n"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire '/wordpress/wp-load.php';\n// The editors open without their welcome guides.\nglobal $wpdb;\nupdate_user_meta(1, $wpdb->get_blog_prefix() . 'persisted_preferences', [\n  'core/edit-post' => ['welcomeGuide' => false],\n  'core/edit-site' => ['welcomeGuide' => false, 'welcomeGuideStyles' => false, 'welcomeGuidePage' => false, 'welcomeGuideTemplate' => false],\n  'core/edit-widgets' => ['welcomeGuide' => false],\n  'core/customize-widgets' => ['welcomeGuide' => false],\n  '_modified' => gmdate('c'),\n]);\n"
     }
   ]
 }

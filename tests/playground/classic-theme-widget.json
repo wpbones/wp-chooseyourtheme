@@ -63,6 +63,10 @@
     {
       "step": "runPHP",
       "code": "<?php\nrequire '/wordpress/wp-load.php';\nupdate_option('wp_chooseyourtheme_settings', ['allowed_themes' => ['twentytwenty', 'twentynineteen'], 'cookie_days' => 30]);\n"
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire '/wordpress/wp-load.php';\n// The editors open without their welcome guides.\nglobal $wpdb;\nupdate_user_meta(1, $wpdb->get_blog_prefix() . 'persisted_preferences', [\n  'core/edit-post' => ['welcomeGuide' => false],\n  'core/edit-site' => ['welcomeGuide' => false, 'welcomeGuideStyles' => false, 'welcomeGuidePage' => false, 'welcomeGuideTemplate' => false],\n  'core/edit-widgets' => ['welcomeGuide' => false],\n  'core/customize-widgets' => ['welcomeGuide' => false],\n  '_modified' => gmdate('c'),\n]);\n"
     }
   ]
 }
