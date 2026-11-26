@@ -1,17 +1,39 @@
 {
   "$schema": "https://playground.wordpress.net/blueprint-schema.json",
-  "landingPage": "/wp-admin/themes.php?page=wp-chooseyourtheme",
   "preferredVersions": {
     "php": "8.2",
     "wp": "latest"
   },
-  "phpExtensionBundles": [
-    "kitchen-sink"
-  ],
   "features": {
     "networking": true
   },
+  "landingPage": "/pick-a-look/",
   "steps": [
+    {
+      "step": "login",
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "wordpress.org/themes",
+        "slug": "twentytwentyfour"
+      },
+      "options": {
+        "activate": false
+      }
+    },
+    {
+      "step": "installTheme",
+      "themeData": {
+        "resource": "wordpress.org/themes",
+        "slug": "twentytwentythree"
+      },
+      "options": {
+        "activate": false
+      }
+    },
     {
       "step": "installPlugin",
       "pluginData": {
@@ -23,9 +45,14 @@
       }
     },
     {
-      "step": "login",
-      "username": "admin",
-      "password": "password"
+      "step": "setSiteOptions",
+      "options": {
+        "permalink_structure": "/%postname%/"
+      }
+    },
+    {
+      "step": "runPHP",
+      "code": "<?php\nrequire '/wordpress/wp-load.php';\nupdate_option('wp_chooseyourtheme_settings', ['allowed_themes' => ['twentytwentyfour', 'twentytwentythree'], 'cookie_days' => 30]);\n$content = '<!-- wp:paragraph --><p>This site comes in three looks. Pick one: your browser remembers it, and the site stays as it is for everyone else.</p><!-- /wp:paragraph -->'\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">A dropdown</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"menu\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">A list</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"list\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:heading {\"level\":3} --><h3 class=\"wp-block-heading\">One link to the next look</h3><!-- /wp:heading -->'\n  . \"\\n<!-- wp:shortcode -->[wp_chooseyourtheme mode=\\\"roll\\\"]<!-- /wp:shortcode -->\\n\"\n  . '<!-- wp:paragraph --><p>Which themes visitors may choose: Appearance &gt; WP Choose Your Theme.</p><!-- /wp:paragraph -->';\nwp_insert_post(['post_type' => 'page', 'post_title' => 'Pick a look', 'post_name' => 'pick-a-look', 'post_content' => $content, 'post_status' => 'publish']);\nflush_rewrite_rules();\n"
     }
   ]
 }
