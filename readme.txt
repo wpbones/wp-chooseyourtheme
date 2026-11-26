@@ -15,6 +15,8 @@ Let your visitors choose which of your installed themes they see the site with: 
 
 WP Choose Your Theme lets a visitor pick the theme they see your site with, from the themes you installed and allowed. Their choice is remembered in their own browser; you, your other visitors and wp-admin keep using the active theme.
 
+Documentation and source code: [github.com/wpbones/wp-chooseyourtheme](https://github.com/wpbones/wp-chooseyourtheme).
+
 Put the switcher where you want it, in three ways and three looks:
 
 * **Widget** — Appearance › Widgets, "Choose Your Theme".
@@ -52,10 +54,10 @@ A page cache keeps one copy of a page and serves it to everyone, so it can serve
 
 ## Screenshots
 
-1. Appearance › WP Choose Your Theme: the allowed themes and the cookie lifetime
-2. The dropdown in a sidebar
-3. The list of links
-4. The widget form in Appearance › Widgets
+1. Appearance › WP Choose Your Theme: the installed themes with their allowed state, kind (block or classic) and the cookie lifetime
+2. The front end with the dropdown (menu mode) in a sidebar, showing the visitor's chosen theme
+3. The list mode: a list of theme links with the current one highlighted
+4. The "Choose Your Theme" widget form in Appearance › Widgets, with its title and mode
 
 ## FAQ
 
@@ -82,6 +84,12 @@ The first time 1.0 loads, every installed theme you had not hidden becomes an al
 
 = 8. Can I change how it looks? =
 The output has plain classes: `wpcyt_form`, `wpcyt_combo`, `wpcyt_submit`, `wpcyt_list`, `wpcyt_roll`, and on each list item the theme's name as a class, plus `selected` for the current one.
+
+= 9. Can I request a new feature? =
+Yes! Please submit feature requests at [the support forum](https://wordpress.org/support/plugin/wp-chooseyourtheme/).
+
+= 10. Can I report a bug? =
+Yes! Please report bugs at [the support forum](https://wordpress.org/support/plugin/wp-chooseyourtheme/).
 
 ## Changelog
 

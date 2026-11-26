@@ -7,9 +7,21 @@ Let your visitors choose which of your installed themes they see the site with: 
 [![WordPress Plugin Tested WP Version](https://img.shields.io/wordpress/plugin/tested/wp-chooseyourtheme)](https://wordpress.org/plugins/wp-chooseyourtheme/)
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
-Built on the [WP Bones](https://wpbones.com) framework. On WordPress.org: <https://wordpress.org/plugins/wp-chooseyourtheme/>.
+## Overview
 
-## How it works
+Pick, in Appearance › WP Choose Your Theme, which installed themes a visitor may choose; the visitor then sees the site with that theme, and nobody else does.
+
+Built on the [WPBones](https://wpbones.com) framework.
+
+## Links
+
+- [WordPress.org Plugin Page](https://wordpress.org/plugins/wp-chooseyourtheme/)
+- [Support Forum](https://wordpress.org/support/plugin/wp-chooseyourtheme/)
+- [Changelog](readme.txt#changelog)
+
+## Features
+
+A widget, a shortcode and a template tag, with three modes each.
 
 You tick, in **Appearance › WP Choose Your Theme**, the installed themes a visitor may pick. The visitor picks one from a switcher you place with a widget, a shortcode or a template tag; the choice is stored in their browser, and from then on that browser sees the site with that theme. The active theme stays what it is for you, wp-admin and every other visitor.
 
@@ -33,22 +45,26 @@ You tick, in **Appearance › WP Choose Your Theme**, the installed themes a vis
 - **No JavaScript needed:** the choice is a link or a GET form to `?wpcyt_theme=<slug>`, answered by a redirect to the same page without it. A small script submits the dropdown on change.
 - **Caching:** a page cache would serve one visitor's theme to everyone. Requests that carry the cookie get `Cache-Control: no-cache` and `Vary: Cookie`; set your cache to bypass visitors with the `wpcyt_theme` cookie if it ignores them.
 
+## Requirements
+
+- PHP >= 8.1
+- WordPress >= 6.6
+- Composer (development only)
+
+## Installation
+
+Install it from the WordPress.org plugin directory, or copy a deploy package to `wp-content/plugins/wp-chooseyourtheme/` and activate it.
+
 ## Development
 
-Requires PHP 8.1 and Composer.
-
-```sh
+```bash
 composer install
-composer test        # PHPUnit + Brain Monkey, no WordPress needed
+composer test           # PHPUnit + Brain Monkey, no WordPress needed
+php bones               # Bones CLI
+php bones deploy <path> --wp --no-build   # package for WordPress.org (no JavaScript is built, so no yarn install)
 ```
 
-Layout: `wp-chooseyourtheme.php` (header and early hooks), `plugin/Support` (settings, themes, the visitor's choice, rendering, shortcode), `plugin/Admin` (the settings page), `plugin/Widgets`, `resources/views/settings.php`, `uninstall.php`.
-
-Make a release package with `php bones deploy <path> --wp --no-build`.
-
-## Changelog
-
-See [readme.txt](readme.txt).
+Layout: `wp-chooseyourtheme.php` (header and early hooks), `plugin/Support` (settings, themes, the visitor's choice, rendering, shortcode), `plugin/Admin` (settings page), `plugin/Widgets`, `resources/views/settings.php`, `uninstall.php`.
 
 ## License
 
