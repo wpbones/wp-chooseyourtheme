@@ -26,12 +26,15 @@ final class Settings
     'allowed_themes' => [],
     // How many days the browser remembers the choice.
     'cookie_days' => 30,
+    // Whether a visitor who chose another theme gets a link back to the site's own theme on a page
+    // that has no switcher. A site saved by 1.0.0 has no such key: it gets the default, on.
+    'back_link' => true,
   ];
 
   /**
    * The saved settings over the defaults, normalised: a corrupted row never reaches the callers.
    *
-   * @return array{allowed_themes: string[], cookie_days: int}
+   * @return array{allowed_themes: string[], cookie_days: int, back_link: bool}
    */
   public static function get(): array
   {
@@ -53,13 +56,18 @@ final class Settings
     return self::get()['cookie_days'];
   }
 
+  public static function backLink(): bool
+  {
+    return self::get()['back_link'];
+  }
+
   /**
    * What the Settings API stores: only strings, only slugs of installed themes, a lifetime inside
    * the limits.
    *
    * @param mixed    $input     What the form posted.
    * @param string[] $installed Stylesheet slugs of the themes installed now.
-   * @return array{allowed_themes: string[], cookie_days: int}
+   * @return array{allowed_themes: string[], cookie_days: int, back_link: bool}
    */
   public static function sanitize(mixed $input, array $installed): array
   {
@@ -77,12 +85,13 @@ final class Settings
     return self::normalize([
       'allowed_themes' => $allowed,
       'cookie_days' => $input['cookie_days'] ?? self::DEFAULTS['cookie_days'],
+      'back_link' => $input['back_link'] ?? self::DEFAULTS['back_link'],
     ]);
   }
 
   /**
    * @param array<string, mixed> $row
-   * @return array{allowed_themes: string[], cookie_days: int}
+   * @return array{allowed_themes: string[], cookie_days: int, back_link: bool}
    */
   public static function normalize(array $row): array
   {
@@ -98,9 +107,13 @@ final class Settings
     $days = $row['cookie_days'] ?? self::DEFAULTS['cookie_days'];
     $days = is_numeric($days) ? (int) $days : self::DEFAULTS['cookie_days'];
 
+    // "0", 0, false and "off" are off; a missing or unreadable value is the default.
+    $back = filter_var($row['back_link'] ?? self::DEFAULTS['back_link'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+
     return [
       'allowed_themes' => array_values($allowed),
       'cookie_days' => max(self::MIN_DAYS, min(self::MAX_DAYS, $days)),
+      'back_link' => $back ?? self::DEFAULTS['back_link'],
     ];
   }
 }

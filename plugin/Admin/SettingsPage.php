@@ -49,7 +49,7 @@ final class SettingsPage
 
   /**
    * @param mixed $input
-   * @return array{allowed_themes: string[], cookie_days: int}
+   * @return array{allowed_themes: string[], cookie_days: int, back_link: bool}
    */
   public static function sanitize($input): array
   {
@@ -106,6 +106,7 @@ final class SettingsPage
         'option' => Settings::OPTION,
         'rows' => $rows,
         'cookieDays' => $settings['cookie_days'],
+        'backLink' => $settings['back_link'],
         'minDays' => Settings::MIN_DAYS,
         'maxDays' => Settings::MAX_DAYS,
         'activeKind' => Themes::kind($activeTheme),

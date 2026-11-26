@@ -61,6 +61,7 @@ final class MigrationTest extends MonkeyTestCase
     Functions\expect('add_option')->once()->with(Settings::OPTION, [
       'allowed_themes' => ['twentytwentyfive', 'twentytwentythree'],
       'cookie_days' => 30,
+      'back_link' => true,
     ]);
 
     Migration::run();

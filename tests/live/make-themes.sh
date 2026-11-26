@@ -20,7 +20,7 @@ cat > "$T/$s/index.php" <<PHP
 <!--MOD:<?php echo get_theme_mod('wpcyt_marker'); ?>-->
 <!--THEME:$s stylesheet=<?php echo get_stylesheet(); ?> template=<?php echo get_template(); ?>-->
 <main><?php while (have_posts()) { the_post(); the_content(); } ?></main>
-<aside><?php wp_chooseyourtheme('mode=list'); dynamic_sidebar('sidebar-1'); ?></aside>
+<?php if (empty(\$_GET['nosw'])) : ?><aside><?php wp_chooseyourtheme('mode=list'); dynamic_sidebar('sidebar-1'); ?></aside><?php endif; ?>
 <?php wp_footer(); ?></body></html>
 PHP
 done

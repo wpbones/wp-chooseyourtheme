@@ -22,6 +22,8 @@ class ThemeSwitcherWidget extends \WP_Widget
         'classname' => 'widget_wp_chooseyourtheme',
         'description' => __('Let visitors choose which theme they see the site with.', 'wp-chooseyourtheme'),
         'customize_selective_refresh' => false,
+        // The block editor reads the instance to turn this widget into the Theme Switcher block.
+        'show_instance_in_rest' => true,
       ]
     );
   }

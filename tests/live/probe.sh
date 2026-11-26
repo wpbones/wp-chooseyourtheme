@@ -39,7 +39,7 @@ cat > "$T/blueprint.json" <<JSON
   { "step": "login" },
   { "step": "setSiteOptions", "options": { "permalink_structure": "/%postname%/" } },
   { "step": "setSiteOptions", "options": $OPTS },
-  { "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; wp_insert_post(['post_title'=>'Probe','post_name'=>'probe','post_status'=>'publish','post_content'=>'<p>PROBE-BODY</p>[wp_chooseyourtheme mode=\"menu\"] [wp_chooseyourtheme mode=\"roll\"] [wp_chooseyourtheme mode=\"list\"]']); update_option('theme_mods_wpcyt-classic-a',['wpcyt_marker'=>'MOD-A']); update_option('theme_mods_wpcyt-classic-b',['wpcyt_marker'=>'MOD-B']); update_option('theme_mods_wpcyt-classic-kid',['wpcyt_marker'=>'MOD-KID']); update_option('sidebars_widgets', ['sidebar-1'=>['wp_chooseyourtheme-2'],'array_version'=>3]); update_option('widget_wp_chooseyourtheme', [2=>['title'=>'Pick one','mode'=>'roll'],'_multiwidget'=>1]);" },
+  { "step": "runPHP", "code": "<?php require '/wordpress/wp-load.php'; wp_insert_post(['post_title'=>'Probe','post_name'=>'probe','post_status'=>'publish','post_content'=>'<p>PROBE-BODY</p>[wp_chooseyourtheme mode=\"menu\"] [wp_chooseyourtheme mode=\"roll\"] [wp_chooseyourtheme mode=\"list\"]']); wp_insert_post(['post_title'=>'Plain','post_name'=>'plain','post_status'=>'publish','post_content'=>'<p>PLAIN-BODY</p>']); wp_insert_post(['post_title'=>'Blockpost','post_name'=>'blockpost','post_status'=>'publish','post_content'=>'<p>BLOCK-BODY</p><!-- wp:wp-chooseyourtheme/switcher {\"mode\":\"menu\",\"title\":\"Block title\"} /--><!-- wp:wp-chooseyourtheme/switcher {\"mode\":\"roll\"} /-->']); update_option('theme_mods_wpcyt-classic-a',['wpcyt_marker'=>'MOD-A']); update_option('theme_mods_wpcyt-classic-b',['wpcyt_marker'=>'MOD-B']); update_option('theme_mods_wpcyt-classic-kid',['wpcyt_marker'=>'MOD-KID']); update_option('sidebars_widgets', ['sidebar-1'=>['wp_chooseyourtheme-2'],'array_version'=>3]); update_option('widget_wp_chooseyourtheme', [2=>['title'=>'Pick one','mode'=>'roll'],'_multiwidget'=>1]);" },
   { "step": "activateTheme", "themeFolderName": "$ACTIVE" },
   { "step": "activatePlugin", "pluginPath": "$SLUG/wp-chooseyourtheme.php" }
 ] }
@@ -65,6 +65,87 @@ ck() { echo "$1"; }    # a raw cookie string
 
 withcookie() { # withcookie <value> -> a jar: admin session + the visitor cookie
   cp "$ADM" "$T/j.jar"; printf '127.0.0.1\tFALSE\t/\tFALSE\t0\twpcyt_theme\t%s\n' "$1" >> "$T/j.jar"; echo "$T/j.jar"; }
+
+follow_back() { # follow_back <jar> <page> -> the way-back link of <page>, followed with the jar; prints the href
+  local href; href=$(get "$1" "$2" | grep -o '<a href="[^"]*" rel="nofollow">Back to[^<]*' | head -1 | sed 's/<a href="//;s/" rel=.*//;s/&#038;/\&/g;s/&amp;/\&/g')
+  [ -n "$href" ] && curl -s -L -b "$1" -c "$1" -o /dev/null "$B$href"; echo "$href"; }
+save_settings() { # save_settings <allowed slug> <back_link 0|1> -> saves through the real form (nonce, Settings API)
+  local n; n=$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme" | grep -o 'name="_wpnonce" value="[^"]*"' | head -1 | sed 's/.*value="//;s/"//')
+  curl -s -L -o /dev/null -b "$ADM" -c "$ADM" --data-urlencode "_wpnonce=$n" -d 'option_page=wp_chooseyourtheme&action=update&_wp_http_referer=%2Fwp-admin%2Fthemes.php%3Fpage%3Dwp-chooseyourtheme' \
+     -d "wp_chooseyourtheme_settings[allowed_themes][]=$1" -d 'wp_chooseyourtheme_settings[cookie_days]=30' -d "wp_chooseyourtheme_settings[back_link]=$2" "$B/wp-admin/options.php"; }
+
+block_checks() { # the block, on the front end and in the editor; $1 = a theme the visitor may pick
+  echo "-- the Theme Switcher block"
+  local RN BT R P E JS U
+  RN=$(curl -s -b "$ADM" "$B/wp-admin/admin-ajax.php?action=rest-nonce")
+  BT=$(curl -s -w '\n%{http_code}' -b "$ADM" -H "X-WP-Nonce: $RN" "$B/wp-json/wp/v2/block-types/wp-chooseyourtheme/switcher")
+  has "block type is registered (200)" '^200$' "$(tail -1 <<<"$BT")"
+  has "…named wp-chooseyourtheme/switcher, titled Theme Switcher" '"name":"wp-chooseyourtheme[^"]*switcher","title":"Theme Switcher"' "$BT"
+  has "…in the widgets category" '"category":"widgets"' "$BT"
+  has "…with its editor script" '"editor_script_handles":\["wp-chooseyourtheme-switcher-editor-script"\]' "$BT"
+  has "…and the shortcode's mode and the widget's title as attributes" '"mode":{' "$BT"
+  R=$(curl -s -w '\n%{http_code}' -b "$ADM" -H "X-WP-Nonce: $RN" -g "$B/wp-json/wp/v2/block-renderer/wp-chooseyourtheme/switcher?context=edit&attributes[mode]=list&attributes[title]=Editor%20title")
+  has "the editor's endpoint renders the block (200)" '^200$' "$(tail -1 <<<"$R")"
+  has "…as the list, in the block wrapper" 'wp-block-wp-chooseyourtheme-switcher.*wpcyt_list' "$R"
+  has "…with its title" 'Editor title' "$R"
+  has "…listing the allowed theme" "wpcyt_theme=$1" "$R"
+  has "…and marking the site's own theme as the current one" "$CURRENT_CLASS selected" "$R"
+  hasnt "…its links lead to the page, not to the REST endpoint" 'block-renderer' "$R"
+  R=$(curl -s -b "$(withcookie "$1")" -H "X-WP-Nonce: $RN" -g "$B/wp-json/wp/v2/block-renderer/wp-chooseyourtheme/switcher?context=edit&attributes[mode]=list")
+  has "…also for an admin whose browser holds a visitor's choice (REST is never swapped)" "$CURRENT_CLASS selected" "$R"
+  R=$(curl -s -b "$ADM" -H "X-WP-Nonce: $RN" -g "$B/wp-json/wp/v2/block-renderer/wp-chooseyourtheme/switcher?context=edit&attributes[mode]=nonsense")
+  has "…an unknown mode is refused by the block's own schema (enum)" 'rest_invalid_param' "$R"
+  E=$(get "$ADM" "/wp-admin/post-new.php")
+  has "the editor page enqueues the block's script" 'blocks/switcher/index.js' "$E"
+  JS=$(grep -o 'src=.[^"'"'"' ]*blocks/switcher/index.js[^"'"'"' ]*' <<<"$E" | head -1 | sed "s/src=.//;s/&#038;/\&/g;s/&amp;/\&/g")
+  case "$JS" in http*) U="$JS";; /*) U="$B$JS";; esac
+  [ "$(curl -s -o /dev/null -w '%{http_code}' "$U")" = 200 ] && ok "…and that script answers 200" || bad "editor script does not answer 200: $U"
+  has "…its translations are set up" 'wp.i18n.setLocaleData\|wp-chooseyourtheme' "$E"
+  P=$(get "$V" "/blockpost/")
+  has "a post with the block renders it on the front end" 'BLOCK-BODY.*wp-block-wp-chooseyourtheme-switcher' "$(tr -d '\n' <<<"$P")"
+  has "…the title above the switcher" 'wp-block-wp-chooseyourtheme-switcher__title">Block title' "$P"
+  has "…menu mode: the form and its script" 'class="wpcyt_form"' "$P"; has "…the menu script is enqueued by the block" 'wp-chooseyourtheme.js' "$P"
+  has "…roll mode" 'class="wpcyt_roll"' "$P"
+  has "…the block's CSS is enqueued" 'blocks/switcher/style.css' "$P"
+  hasnt "…no way-back bar: a switcher is on the page" 'wpcyt_back' "$P"
+  [ "$(curl -s -o /dev/null -w '%{http_code}' "$B/wp-content/plugins/$SLUG/blocks/switcher/style.css")" = 200 ] && ok "…and the CSS answers 200" || bad "block CSS does not answer 200"
+  P=$(get "$(withcookie "$1")" "/blockpost/")
+  has "a visitor on the chosen theme sees the block too" 'BLOCK-BODY' "$P"; has "…with the chosen theme marked" 'selected' "$P"
+}
+
+way_back_checks() { # <other theme slug> <other name> <own name> <plain page query> : the stuck case, and every case it must not show
+  local other=$1 oname=$2 own=$3 q=$4 J P H href
+  echo "-- the way back (a visitor on $oname, a page with no switcher)"
+  P=$(get "$(withcookie "$other")" "/plain/$q")
+  has "the bar is shown" 'class="wpcyt_back"' "$P"
+  has "…a landmark with a name" '<aside class="wpcyt_back" aria-label="Theme choice">' "$P"
+  has "…one sentence naming the theme the visitor sees" "You are viewing this site with $oname\." "$P"
+  has "…and one link back to the site's own theme" "rel=\"nofollow\">Back to $own<" "$P"
+  has "…with its own colours, fixed to the bottom" 'position:fixed;inset-block-end:0' "$P"
+  has "…hidden in print" '@media print{.wpcyt_back{display:none}}' "$P"
+  [ "$(grep -c 'wpcyt_back' <<<"$P")" -ge 1 ] && ok "…printed once" || bad "not printed"
+  [ "$(grep -o '<aside class="wpcyt_back"' <<<"$P" | wc -l | tr -d ' ')" = 1 ] && ok "…exactly one bar" || bad "more than one bar"
+  hasnt "…not on a page that has a switcher (the shortcodes' page)" 'class="wpcyt_back"' "$(get "$(withcookie "$other")" "/probe/")"
+  hasnt "…not on a page with the block" 'class="wpcyt_back"' "$(get "$(withcookie "$other")" "/blockpost/")"
+  hasnt "…not for a visitor on the site's own theme" 'class="wpcyt_back"' "$(get "$V" "/plain/$q")"
+  hasnt "…not for a refused choice (a forged cookie shows the own theme)" 'class="wpcyt_back"' "$(get "$(withcookie no-such-theme)" "/plain/$q")"
+  hasnt "…not when the filter says no" 'class="wpcyt_back"' "$(get "$(withcookie "$other")" "/plain/${q:-?}${q:+&}nobacklink=1")"
+  hasnt "…not in wp-admin" 'wpcyt_back' "$(get "$(withcookie "$other")" "/wp-admin/themes.php?page=wp-chooseyourtheme")"
+  J=$(withcookie "$other")
+  href=$(follow_back "$J" "/plain/$q"); echo "  link: $href"
+  has "the link is the choice link to the own theme, for the same page" "^/plain/.*wpcyt_theme=" "$href"
+  hasnt "…following it drops the visitor's cookie" "wpcyt_theme[[:space:]]$other" "$(cat "$J")"
+  P=$(get "$J" "/plain/$q")
+  has "…and the page is served with the site's own theme" "$OWN_MARK" "$P"
+  has "…the same page (its body)" 'PLAIN-BODY' "$P"
+  hasnt "…without the bar" 'class="wpcyt_back"' "$P"
+  save_settings "$other" 0
+  has "the setting 'Link back' is saved off" 'id="wpcyt-back-link"[^>]*>' "$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme" | tr -s ' \n' ' ')"
+  hasnt "…it is no longer ticked" 'id="wpcyt-back-link"[^>]*checked' "$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme" | tr -s ' \n' ' ')"
+  hasnt "…and with it off the bar is not shown" 'class="wpcyt_back"' "$(get "$(withcookie "$other")" "/plain/$q")"
+  save_settings "$other" 1
+  has "switched on again, the bar is back" 'class="wpcyt_back"' "$(get "$(withcookie "$other")" "/plain/$q")"
+}
 
 echo "== scenario: $SCEN (active: $ACTIVE) on $(grep -o "wp_version = '[^']*'" $WPV/wp-includes/version.php)"
 
@@ -100,6 +181,15 @@ if [ "$SCEN" = classic ]; then
   has "child theme: stylesheet is the child, template the parent" "stylesheet=wpcyt-classic-kid template=wpcyt-classic-a" "$P"
   has "the list marks the current theme" 'class="classic-kid selected"' "$P"
   H=$(head_ "$K" "/probe/"); has "cookie holder: Vary: Cookie" 'Vary: Cookie' "$H"; has "cookie holder: nocache" 'Cache-Control: no-cache' "$H"
+
+  echo "-- settings of 1.0.0 (no back_link key): the way back is on, and its setting is ticked"
+  has "settings page: Link back ticked" 'id="wpcyt-back-link"[^>]*checked' "$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme" | tr -s ' \n' ' ')"
+  OWN_MARK="THEME:wpcyt-classic-a stylesheet=wpcyt-classic-a"; CURRENT_CLASS='classic-a'
+  way_back_checks wpcyt-classic-kid "Classic Kid" "Classic A" "?nosw=1"
+  hasnt "classic theme with the switcher in its template: no bar" 'class="wpcyt_back"' "$(get "$(withcookie wpcyt-classic-kid)" "/plain/")"
+  block_checks wpcyt-classic-kid
+  W=$(curl -s -b "$ADM" -H "X-WP-Nonce: $(curl -s -b "$ADM" "$B/wp-admin/admin-ajax.php?action=rest-nonce")" "$B/wp-json/wp/v2/widgets/wp_chooseyourtheme-2?context=edit")
+  has "the widget's instance is readable in REST (for the block conversion)" '"raw":{"title":"Pick one","mode":"roll"}' "$W"
 
   echo "-- refusals"
   for v in wpcyt-classic-b twentytwentyfive wpcyt-orphan no-such-theme '../etc/passwd'; do
@@ -151,6 +241,13 @@ if [ "$SCEN" = locale ]; then
   A=$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme"); P=$(get "$V" "/probe/")
   echo "$A" | grep -o '<h2 class="title">[^<]*' | sed 's/<h2 class="title">/  admin: /'
   echo "$P" | grep -o '<button type="submit" class="wpcyt_submit">[^<]*' | head -1 | sed 's/.*">/  front menu button: /'
+  E=$(get "$ADM" "/wp-admin/post-new.php")
+  case "$LOCALE" in it_IT) JSS='Elenco di link'; BAR='Stai vedendo questo sito';; de_DE) JSS='Liste von Links\|Eine Liste'; BAR='Du siehst diese Website';; *) JSS=''; BAR='';; esac
+  if [ -n "$JSS" ]; then
+    has "the editor's strings are translated (setLocaleData in the editor page)" 'setLocaleData.*wp-chooseyourtheme\|Theme Switcher' "$E"
+    has "…in $LOCALE" "$JSS" "$E"
+    P=$(get "$(withcookie wpcyt-classic-b)" "/plain/?nosw=1"); has "the way-back bar is translated" "$BAR" "$P"
+  fi
   echo "$A" | grep -o 'Not offered[^<]*\|Non offert[^<]*\|No se ofrece[^<]*\|Non propos[^<]*\|Nicht im Angebot[^<]*\|Não oferecido[^<]*' | head -1 | sed 's/^/  status: /'
 fi
 
@@ -167,6 +264,11 @@ if [ "$SCEN" = block ]; then
   A=$(get "$(withcookie twentytwentyfour)" "/wp-admin/themes.php?page=wp-chooseyourtheme"); has "settings page" 'Themes visitors may choose' "$A"; has "admin sees the active theme" 'ADMIN-STYLESHEET:twentytwentyfive' "$A"
   C=$(curl -s -o /dev/null -w '%{http_code}' -b "$(withcookie twentytwentyfour)" "$B/wp-admin/site-editor.php"); [ "$C" = 200 ] && ok "Site Editor (200) with the cookie set" || bad "site editor $C"
   X=$(curl -s -b "$V; wpcyt_theme=twentytwentyfour" "$B/wp-json/wpcyt-probe/v1/theme"); has "REST sees the active theme" '"stylesheet":"twentytwentyfive"' "$X"
+  echo "-- settings of 1.0.0 (no back_link key): the way back is on, and its setting is ticked"
+  has "settings page: Link back ticked" 'id="wpcyt-back-link"[^>]*checked' "$(get "$ADM" "/wp-admin/themes.php?page=wp-chooseyourtheme" | tr -s ' \n' ' ')"
+  OWN_MARK='themes/twentytwentyfive/'; CURRENT_CLASS='twenty-twentyfive'
+  way_back_checks twentytwentyfour "Twenty Twenty-Four" "Twenty Twenty-Five" ""
+  block_checks twentytwentyfour
 fi
 
 if [ "$SCEN" = mixed ]; then

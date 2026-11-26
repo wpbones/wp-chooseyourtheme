@@ -10,6 +10,9 @@ add_action('login_footer', fn () => print('<!--LOGIN-STYLESHEET:' . get_styleshe
 if (getenv('WPCYT_MIX') || file_exists('/wordpress/wp-content/mix.flag')) {
   add_filter('wp_chooseyourtheme_allow_mixed_kinds', '__return_true');
 }
+if (isset($_GET['nobacklink'])) {
+  add_filter('wp_chooseyourtheme_show_back_link', '__return_false');
+}
 add_action('init', function () {
   if (isset($_GET['wpcyt_dump_options'])) {
     global $wpdb;

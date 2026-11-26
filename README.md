@@ -27,9 +27,11 @@ Built on the [WPBones](https://wpbones.com) framework.
 
 ## Features
 
-A widget, a shortcode and a template tag, with three modes each.
+A block, a widget, a shortcode and a template tag, with three modes each.
 
 You tick, in **Appearance › WP Choose Your Theme**, the installed themes a visitor may pick. The visitor picks one from a switcher you place with a widget, a shortcode or a template tag; the choice is stored in their browser, and from then on that browser sees the site with that theme. The active theme stays what it is for you, wp-admin and every other visitor.
+
+The **Theme Switcher** block (`wp-chooseyourtheme/switcher`) shows the real switcher in the block editor and the Site Editor; its sidebar sets the mode and an optional title, and it supports text alignment, font size, text and link colour and margin. A `[wp_chooseyourtheme]` shortcode or the plugin's widget converts to it. There is no JavaScript build: the editor script is `blocks/switcher/index.js`, written by hand against the `wp.*` globals.
 
 ```
 [wp_chooseyourtheme mode="menu"]   a dropdown (default)
@@ -40,6 +42,20 @@ You tick, in **Appearance › WP Choose Your Theme**, the installed themes a vis
 ```php
 <?php wp_chooseyourtheme( 'mode=list' ); ?>
 ```
+
+### A way back
+
+A template part or a widget area belongs to one theme: a switcher in Twenty Twenty-Five's footer is not in Twenty Twenty-Four's, and a visitor who picked the latter would be stuck with it for the cookie's lifetime. So, at `wp_footer`, a small bar ("You are viewing this site with X. Back to Y") is printed when all of these hold: the public site, the visitor is shown a theme other than the active one, no switcher (block, shortcode, widget, template tag) was printed on the page, the setting "Link back" is on (default, also after an upgrade from 1.0.0) and the filter allows it:
+
+```php
+add_filter( 'wp_chooseyourtheme_show_back_link', function ( bool $show, $shown_theme, $active_theme ) {
+  return $show && ! is_front_page();
+}, 10, 3 );
+```
+
+The link is the plugin's own choice link to the active theme, which is always allowed, so it returns to the same page.
+
+In a block theme put the switcher in each allowed theme's template part, or in page content; in a classic theme, in each theme's widget area, or in content.
 
 ### Rules
 
@@ -71,7 +87,7 @@ php bones               # Bones CLI
 php bones deploy <path> --wp --no-build   # package for WordPress.org (no JavaScript is built, so no yarn install)
 ```
 
-Layout: `wp-chooseyourtheme.php` (header and early hooks), `plugin/Support` (settings, themes, the visitor's choice, rendering, shortcode), `plugin/Admin` (settings page), `plugin/Widgets`, `resources/views/settings.php`, `uninstall.php`.
+Layout: `wp-chooseyourtheme.php` (header and early hooks), `plugin/Support` (settings, themes, the visitor's choice, rendering, shortcode, block, way-back bar), `plugin/Admin` (settings page), `plugin/Widgets`, `blocks/switcher` (the block: `block.json`, `index.js`, `index.asset.php`, `style.css`), `resources/views/settings.php`, `uninstall.php`. After changing a string in the block's JavaScript, run `yarn make-pot`, update the `.po` files and `wp i18n make-mo languages && wp i18n make-json languages --no-purge`; the editor script's translations are loaded from `languages/` by `Block::register()`.
 
 ## License
 

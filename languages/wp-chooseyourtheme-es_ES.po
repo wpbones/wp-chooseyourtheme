@@ -1,17 +1,15 @@
-# Copyright (C) 2026 Giovambattista Fazioli
-# This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Choose Your Theme 1.0.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-chooseyourtheme\n"
 "Last-Translator: Giovambattista Fazioli\n"
 "Language-Team: Español\n"
-"Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: 2026-11-26T08:28:38+00:00\n"
 "PO-Revision-Date: 2026-11-26 00:00+0000\n"
+"Language: es\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-chooseyourtheme\n"
@@ -20,14 +18,9 @@ msgstr ""
 #: wp-chooseyourtheme.php
 #: plugin/Admin/SettingsPage.php:32
 #: plugin/Admin/SettingsPage.php:33
-#: resources/views/settings.php:30
+#: resources/views/settings.php:31
 msgid "WP Choose Your Theme"
 msgstr "WP Choose Your Theme"
-
-#. Plugin URI of the plugin
-#: wp-chooseyourtheme.php
-msgid "https://wordpress.org/plugins/wp-chooseyourtheme/"
-msgstr "https://wordpress.org/plugins/wp-chooseyourtheme/"
 
 #. Description of the plugin
 #: wp-chooseyourtheme.php
@@ -39,21 +32,16 @@ msgstr "Permite que tus visitantes elijan con cuál de tus temas instalados ven 
 msgid "Giovambattista Fazioli"
 msgstr "Giovambattista Fazioli"
 
-#. Author URI of the plugin
-#: wp-chooseyourtheme.php
-msgid "http://undolog.com"
-msgstr "http://undolog.com"
-
 #: plugin/Admin/SettingsPage.php:65
 msgid "Settings"
 msgstr "Ajustes"
 
-#: plugin/Support/Renderer.php:70
-#: resources/views/settings.php:43
+#: plugin/Support/Renderer.php:92
+#: resources/views/settings.php:44
 msgid "Theme"
 msgstr "Tema"
 
-#: plugin/Support/Renderer.php:78
+#: plugin/Support/Renderer.php:101
 msgid "Change theme"
 msgstr "Cambiar tema"
 
@@ -65,118 +53,218 @@ msgstr "Elige tu tema"
 msgid "Let visitors choose which theme they see the site with."
 msgstr "Permite que los visitantes elijan con qué tema ven el sitio."
 
-#: plugin/Widgets/ThemeSwitcherWidget.php:64
+#: plugin/Widgets/ThemeSwitcherWidget.php:66
+#: blocks/switcher/index.js:30
 msgid "Dropdown menu"
 msgstr "Menú desplegable"
 
-#: plugin/Widgets/ThemeSwitcherWidget.php:65
+#: plugin/Widgets/ThemeSwitcherWidget.php:67
+#: blocks/switcher/index.js:31
 msgid "List of links"
 msgstr "Lista de enlaces"
 
-#: plugin/Widgets/ThemeSwitcherWidget.php:66
+#: plugin/Widgets/ThemeSwitcherWidget.php:68
+#: blocks/switcher/index.js:32
 msgid "One link to the next theme"
 msgstr "Un enlace al tema siguiente"
 
-#: plugin/Widgets/ThemeSwitcherWidget.php:70
+#: plugin/Widgets/ThemeSwitcherWidget.php:72
 msgid "Title:"
 msgstr "Título:"
 
-#: plugin/Widgets/ThemeSwitcherWidget.php:74
+#: plugin/Widgets/ThemeSwitcherWidget.php:76
 msgid "Show as:"
 msgstr "Mostrar como:"
 
-#: resources/views/settings.php:19
+#: resources/views/settings.php:20
 msgid "Block theme"
 msgstr "Tema de bloques"
 
-#: resources/views/settings.php:20
+#: resources/views/settings.php:21
 msgid "Classic theme"
 msgstr "Tema clásico"
 
-#: resources/views/settings.php:25
+#: resources/views/settings.php:26
 msgid "Not offered: the active theme is a block theme"
 msgstr "No se ofrece: el tema activo es un tema de bloques"
 
-#: resources/views/settings.php:26
+#: resources/views/settings.php:27
 msgid "Not offered: the active theme is a classic theme"
 msgstr "No se ofrece: el tema activo es un tema clásico"
 
-#: resources/views/settings.php:32
+#: resources/views/settings.php:33
 msgid "Choose which of your installed themes a visitor may pick. The visitor sees the site with that theme; you and the other visitors keep the active one."
 msgstr "Elige cuáles de tus temas instalados puede seleccionar un visitante. El visitante ve el sitio con ese tema; tú y los demás visitantes seguís viendo el tema activo."
 
-#: resources/views/settings.php:37
+#: resources/views/settings.php:38
 msgid "Themes visitors may choose"
 msgstr "Temas que los visitantes pueden elegir"
 
-#: resources/views/settings.php:42
+#: resources/views/settings.php:43
 msgid "Allowed"
 msgstr "Permitido"
 
-#: resources/views/settings.php:44
+#: resources/views/settings.php:45
 msgid "Kind"
 msgstr "Tipo"
 
-#: resources/views/settings.php:45
+#: resources/views/settings.php:46
 msgid "Status"
 msgstr "Estado"
 
 #. translators: %s: the name of a parent theme.
-#: resources/views/settings.php:70
+#: resources/views/settings.php:71
 #, php-format
 msgid "Child of %s"
 msgstr "Hijo de %s"
 
-#: resources/views/settings.php:79
+#: resources/views/settings.php:80
 msgid "Active: always available"
 msgstr "Activo: siempre disponible"
 
-#: resources/views/settings.php:83
+#: resources/views/settings.php:84
 msgid "Visitors may choose it"
 msgstr "Los visitantes pueden elegirlo"
 
-#: resources/views/settings.php:85
+#: resources/views/settings.php:86
 msgid "Hidden from visitors"
 msgstr "Oculto para los visitantes"
 
-#: resources/views/settings.php:95
+#: resources/views/settings.php:96
 msgid "Block themes and classic themes keep their templates, menus and widget areas in different places, so a visitor is only ever switched to a theme of the same kind as the active one."
 msgstr "Los temas de bloques y los temas clásicos guardan sus plantillas, menús y áreas de widgets en sitios distintos, así que a un visitante solo se le cambia a un tema del mismo tipo que el activo."
 
-#: resources/views/settings.php:98
+#: resources/views/settings.php:99
 msgid "Remember the choice"
 msgstr "Recordar la elección"
 
-#: resources/views/settings.php:102
+#: resources/views/settings.php:103
 msgid "Days"
 msgstr "Días"
 
 #. translators: 1: the smallest number of days, 2: the largest.
-#: resources/views/settings.php:108
+#: resources/views/settings.php:109
 #, php-format
 msgid "How long a visitor's browser remembers the theme they chose, from %1$d to %2$d days."
 msgstr "Durante cuánto tiempo el navegador del visitante recuerda el tema que eligió, de %1$d a %2$d días."
 
-#: resources/views/settings.php:118
+#: resources/views/settings.php:137
 msgid "Show the switcher"
 msgstr "Mostrar el selector"
 
-#: resources/views/settings.php:120
-msgid "Three ways in, each with the same three modes: menu (a dropdown), list (a list of links) and roll (one link to the next theme)."
-msgstr "Tres formas de añadirlo, cada una con los mismos tres modos: menu (desplegable), list (lista de enlaces) y roll (un solo enlace al tema siguiente)."
-
-#: resources/views/settings.php:122
+#: resources/views/settings.php:141
 msgid "Widget: Appearance › Widgets, \"Choose Your Theme\"."
 msgstr "Widget: Apariencia › Widgets, «Elige tu tema»."
 
-#: resources/views/settings.php:123
+#: resources/views/settings.php:142
 msgid "Shortcode:"
 msgstr "Shortcode:"
 
-#: resources/views/settings.php:124
+#: resources/views/settings.php:143
 msgid "Template tag:"
 msgstr "Etiqueta de plantilla:"
 
-#: resources/views/settings.php:128
+#: resources/views/settings.php:148
 msgid "A page cache serves one copy of a page to everyone. If a caching plugin or your host caches pages, set it to skip the cache for visitors who send the wpcyt_theme cookie, or visitors may be shown each other's theme."
 msgstr "Una caché de páginas sirve la misma copia de una página a todos. Si un plugin de caché o tu hosting guarda las páginas, configúralo para que se salte la caché con los visitantes que envían la cookie wpcyt_theme, o los visitantes podrían ver el tema de otro."
+
+#. Plugin URI of the plugin
+#: wp-chooseyourtheme.php
+msgid "https://github.com/wpbones/wp-chooseyourtheme"
+msgstr "https://github.com/wpbones/wp-chooseyourtheme"
+
+#. Author URI of the plugin
+#: wp-chooseyourtheme.php
+msgid "https://undolog.com"
+msgstr "https://undolog.com"
+
+#. translators: %s: the name of the theme the visitor is shown.
+#: plugin/Support/BackLink.php:65
+#, php-format
+msgid "You are viewing this site with %s."
+msgstr "Estás viendo este sitio con %s."
+
+#. translators: %s: the name of the site's own theme.
+#: plugin/Support/BackLink.php:67
+#, php-format
+msgid "Back to %s"
+msgstr "Volver a %s"
+
+#: plugin/Support/BackLink.php:70
+msgid "Theme choice"
+msgstr "Elección de tema"
+
+#: resources/views/settings.php:116
+msgid "A way back"
+msgstr "Una vía de vuelta"
+
+#: resources/views/settings.php:120
+msgid "Link back"
+msgstr "Enlace de vuelta"
+
+#: resources/views/settings.php:125
+msgid "Show visitors who chose another theme a link back to the site's own theme, when the page has no switcher"
+msgstr "Mostrar a los visitantes que han elegido otro tema un enlace para volver al tema del sitio, cuando la página no tiene selector"
+
+#: resources/views/settings.php:128
+msgid "A template part or a widget area belongs to one theme, so the theme a visitor chose may have no switcher in it. This small bar at the bottom of the page lets them go back."
+msgstr "Una parte de plantilla o un área de widgets pertenece a un solo tema, así que el tema que eligió el visitante puede no tener selector. Esta pequeña barra al pie de la página le permite volver."
+
+#: resources/views/settings.php:139
+msgid "Four ways in, each with the same three modes: menu (a dropdown), list (a list of links) and roll (one link to the next theme)."
+msgstr "Cuatro formas de añadirlo, cada una con los mismos tres modos: menu (un desplegable), list (una lista de enlaces) y roll (un solo enlace al tema siguiente)."
+
+#: resources/views/settings.php:144
+msgid "Block: \"Theme Switcher\", in the block editor and the Site Editor."
+msgstr "Bloque: «Theme Switcher», en el editor de bloques y en el editor del sitio."
+
+#: blocks/switcher/index.js:45
+#: blocks/switcher/index.js:62
+msgid "Theme Switcher"
+msgstr "Selector de tema"
+
+#: blocks/switcher/index.js:46
+msgid "There is only one theme to choose from. Tick more themes in Appearance > WP Choose Your Theme."
+msgstr "Solo hay un tema para elegir. Marca más temas en Apariencia > WP Choose Your Theme."
+
+#: blocks/switcher/index.js:64
+msgid "Show as"
+msgstr "Mostrar como"
+
+#: blocks/switcher/index.js:74
+msgid "Title"
+msgstr "Título"
+
+#: blocks/switcher/index.js:75
+msgid "Optional. Shown above the switcher."
+msgstr "Opcional. Se muestra encima del selector."
+
+#: blocks/switcher/block.json
+msgctxt "block title"
+msgid "Theme Switcher"
+msgstr "Selector de tema"
+
+#: blocks/switcher/block.json
+msgctxt "block description"
+msgid "Let visitors choose which of your installed themes they see the site with."
+msgstr "Permite que los visitantes elijan con cuál de tus temas instalados ven el sitio."
+
+#: blocks/switcher/block.json
+msgctxt "block keyword"
+msgid "theme"
+msgstr "tema"
+
+#: blocks/switcher/block.json
+msgctxt "block keyword"
+msgid "switcher"
+msgstr "selector"
+
+#: blocks/switcher/block.json
+msgctxt "block keyword"
+msgid "look"
+msgstr "aspecto"
+
+#: blocks/switcher/block.json
+msgctxt "block keyword"
+msgid "style"
+msgstr "estilo"

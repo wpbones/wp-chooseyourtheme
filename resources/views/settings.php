@@ -8,6 +8,7 @@
  * @var int    $cookieDays Days the choice is remembered.
  * @var int    $minDays
  * @var int    $maxDays
+ * @var bool   $backLink   Whether the way-back bar is on.
  * @var string $activeKind "block" or "classic".
  */
 
@@ -112,16 +113,35 @@ $notOffered = [
       </tr>
     </table>
 
+    <h2 class="title"><?php esc_html_e('A way back', 'wp-chooseyourtheme'); ?></h2>
+
+    <table class="form-table" role="presentation">
+      <tr>
+        <th scope="row"><?php esc_html_e('Link back', 'wp-chooseyourtheme'); ?></th>
+        <td>
+          <input type="hidden" name="<?php echo esc_attr($option); ?>[back_link]" value="0" />
+          <label for="wpcyt-back-link">
+            <input type="checkbox" id="wpcyt-back-link" name="<?php echo esc_attr($option); ?>[back_link]" value="1" <?php checked($backLink); ?> />
+            <?php esc_html_e('Show visitors who chose another theme a link back to the site\'s own theme, when the page has no switcher', 'wp-chooseyourtheme'); ?>
+          </label>
+          <p class="description">
+            <?php esc_html_e('A template part or a widget area belongs to one theme, so the theme a visitor chose may have no switcher in it. This small bar at the bottom of the page lets them go back.', 'wp-chooseyourtheme'); ?>
+          </p>
+        </td>
+      </tr>
+    </table>
+
     <?php submit_button(); ?>
   </form>
 
   <h2 class="title"><?php esc_html_e('Show the switcher', 'wp-chooseyourtheme'); ?></h2>
 
-  <p><?php esc_html_e('Three ways in, each with the same three modes: menu (a dropdown), list (a list of links) and roll (one link to the next theme).', 'wp-chooseyourtheme'); ?></p>
+  <p><?php esc_html_e('Four ways in, each with the same three modes: menu (a dropdown), list (a list of links) and roll (one link to the next theme).', 'wp-chooseyourtheme'); ?></p>
   <ul style="list-style: disc; margin-left: 1.5em">
     <li><?php esc_html_e('Widget: Appearance › Widgets, "Choose Your Theme".', 'wp-chooseyourtheme'); ?></li>
     <li><?php esc_html_e('Shortcode:', 'wp-chooseyourtheme'); ?> <code>[wp_chooseyourtheme mode="list"]</code></li>
     <li><?php esc_html_e('Template tag:', 'wp-chooseyourtheme'); ?> <code>&lt;?php wp_chooseyourtheme( 'mode=roll' ); ?&gt;</code></li>
+    <li><?php esc_html_e('Block: "Theme Switcher", in the block editor and the Site Editor.', 'wp-chooseyourtheme'); ?></li>
   </ul>
 
   <p class="description">

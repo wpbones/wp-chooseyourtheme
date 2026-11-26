@@ -3,6 +3,8 @@
 namespace WPChooseYourTheme;
 
 use WPChooseYourTheme\Admin\SettingsPage;
+use WPChooseYourTheme\Support\BackLink;
+use WPChooseYourTheme\Support\Block;
 use WPChooseYourTheme\Support\Migration;
 use WPChooseYourTheme\Support\Shortcode;
 use WPChooseYourTheme\Support\Visitor;
@@ -36,7 +38,10 @@ final class Boot
 
     add_action('init', [self::class, 'init'], 0);
     add_action('init', [Visitor::class, 'handleRequest'], 1);
+    add_action('init', [Block::class, 'register']);
     add_action('widgets_init', [self::class, 'widgets']);
+    // Late, after the theme's own footer output, so a switcher printed there has been seen.
+    add_action('wp_footer', [BackLink::class, 'print'], 99);
 
     SettingsPage::hooks($pluginFile);
   }

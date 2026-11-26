@@ -7,6 +7,7 @@ namespace WPChooseYourTheme\Tests\Support;
 use Brain\Monkey;
 use Mockery;
 use PHPUnit\Framework\TestCase;
+use WPChooseYourTheme\Support\Renderer;
 use WPChooseYourTheme\Support\Visitor;
 
 /**
@@ -26,6 +27,7 @@ abstract class MonkeyTestCase extends TestCase
     unset($GLOBALS['pagenow']);
     $GLOBALS['wpcyt_test_blog'] = 1;
     Visitor::reset();
+    Renderer::reset();
 
     // The unit tests have no WordPress; these are the plain behaviours the code leans on.
     Monkey\Functions\stubs([
@@ -40,6 +42,8 @@ abstract class MonkeyTestCase extends TestCase
       'esc_url' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
       'esc_html__' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
       '__' => static fn ($value) => $value,
+      'esc_attr__' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
+      'wp_is_serving_rest_request' => false,
     ]);
   }
 

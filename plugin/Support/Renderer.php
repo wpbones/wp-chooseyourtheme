@@ -23,6 +23,9 @@ final class Renderer
 
   private static int $instances = 0;
 
+  /** Whether a switcher was printed on this page: the way-back bar is for pages that have none. */
+  private static bool $printed = false;
+
   /**
    * @param string $mode One of {@see self::MODES}; anything else is the menu.
    */
@@ -35,14 +38,33 @@ final class Renderer
       return '';
     }
 
-    $uri = Url::relative((string) wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
+    // The editor's preview is rendered by a REST request: its links point at the page, not at the endpoint.
+    $uri = wp_is_serving_rest_request() ? '/' : Url::relative((string) wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
     $current = (string) get_stylesheet();
+
+    self::$printed = true;
 
     return match ($mode) {
       'list' => self::list($themes, $current, $uri),
       'roll' => self::roll($themes, $current, $uri),
       default => self::menu($themes, $current, $uri),
     };
+  }
+
+  /**
+   * Whether a switcher, by any way in, was printed on this page so far.
+   */
+  public static function printed(): bool
+  {
+    return self::$printed;
+  }
+
+  /**
+   * Forget what was printed; for tests.
+   */
+  public static function reset(): void
+  {
+    self::$printed = false;
   }
 
   public static function normalizeMode(mixed $mode): string
