@@ -52,7 +52,12 @@ final class Block
     $title = isset($attributes['title']) && is_string($attributes['title']) ? trim($attributes['title']) : '';
     $heading = $title === '' ? '' : '<p class="wp-block-wp-chooseyourtheme-switcher__title">' . esc_html($title) . '</p>';
 
-    // The switcher is built, and escaped, by the renderer.
+    // The editor draws the wrapper itself (useBlockProps), with the same classes: a second one here
+    // would apply the margin and an em font size twice. The switcher is built, and escaped, by the renderer.
+    if (Renderer::isEditorPreview()) {
+      return $heading . $switcher;
+    }
+
     return '<div ' . get_block_wrapper_attributes() . '>' . $heading . $switcher . '</div>';
   }
 }

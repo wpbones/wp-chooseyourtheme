@@ -86,7 +86,8 @@ block_checks() { # the block, on the front end and in the editor; $1 = a theme t
   has "…and the shortcode's mode and the widget's title as attributes" '"mode":{' "$BT"
   R=$(curl -s -w '\n%{http_code}' -b "$ADM" -H "X-WP-Nonce: $RN" -g "$B/wp-json/wp/v2/block-renderer/wp-chooseyourtheme/switcher?context=edit&attributes[mode]=list&attributes[title]=Editor%20title")
   has "the editor's endpoint renders the block (200)" '^200$' "$(tail -1 <<<"$R")"
-  has "…as the list, in the block wrapper" 'wp-block-wp-chooseyourtheme-switcher.*wpcyt_list' "$R"
+  has "…as the list" 'wpcyt_list' "$R"
+  hasnt "…without the block wrapper (the editor draws its own: no margin or font size twice)" '<div class=\\"wp-block-wp-chooseyourtheme-switcher' "$R"
   has "…with its title" 'Editor title' "$R"
   has "…listing the allowed theme" "wpcyt_theme=$1" "$R"
   has "…and marking the site's own theme as the current one" "$CURRENT_CLASS selected" "$R"
@@ -95,6 +96,9 @@ block_checks() { # the block, on the front end and in the editor; $1 = a theme t
   has "…also for an admin whose browser holds a visitor's choice (REST is never swapped)" "$CURRENT_CLASS selected" "$R"
   R=$(curl -s -b "$ADM" -H "X-WP-Nonce: $RN" -g "$B/wp-json/wp/v2/block-renderer/wp-chooseyourtheme/switcher?context=edit&attributes[mode]=nonsense")
   has "…an unknown mode is refused by the block's own schema (enum)" 'rest_invalid_param' "$R"
+  R=$(curl -s -b "$V" "$B/wp-json/wp/v2/posts?slug=blockpost" | python3 -c 'import sys,json; print(json.load(sys.stdin)[0]["content"]["rendered"])')
+  has "a post's content over REST keeps the block's wrapper (it is not the editor)" '<div class="wp-block-wp-chooseyourtheme-switcher"' "$R"
+  has "…and its links return to the post, not to the REST endpoint or home" 'href="/blockpost/?wpcyt_theme=' "$R"
   E=$(get "$ADM" "/wp-admin/post-new.php")
   has "the editor page enqueues the block's script" 'blocks/switcher/index.js' "$E"
   JS=$(grep -o 'src=.[^"'"'"' ]*blocks/switcher/index.js[^"'"'"' ]*' <<<"$E" | head -1 | sed "s/src=.//;s/&#038;/\&/g;s/&amp;/\&/g")
@@ -121,7 +125,7 @@ way_back_checks() { # <other theme slug> <other name> <own name> <plain page que
   has "…a landmark with a name" '<aside class="wpcyt_back" aria-label="Theme choice">' "$P"
   has "…one sentence naming the theme the visitor sees" "You are viewing this site with $oname\." "$P"
   has "…and one link back to the site's own theme" "rel=\"nofollow\">Back to $own<" "$P"
-  has "…with its own colours, fixed to the bottom" 'position:fixed;inset-block-end:0' "$P"
+  has "…with its own colours, sticky at the bottom, after the last line" 'position:sticky;inset-block-end:0' "$P"
   has "…hidden in print" '@media print{.wpcyt_back{display:none}}' "$P"
   [ "$(grep -c 'wpcyt_back' <<<"$P")" -ge 1 ] && ok "…printed once" || bad "not printed"
   [ "$(grep -o '<aside class="wpcyt_back"' <<<"$P" | wc -l | tr -d ' ')" = 1 ] && ok "…exactly one bar" || bad "more than one bar"

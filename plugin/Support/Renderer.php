@@ -38,8 +38,7 @@ final class Renderer
       return '';
     }
 
-    // The editor's preview is rendered by a REST request: its links point at the page, not at the endpoint.
-    $uri = wp_is_serving_rest_request() ? '/' : Url::relative((string) wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
+    $uri = self::uri();
     $current = (string) get_stylesheet();
 
     self::$printed = true;
@@ -49,6 +48,55 @@ final class Renderer
       'roll' => self::roll($themes, $current, $uri),
       default => self::menu($themes, $current, $uri),
     };
+  }
+
+  /**
+   * The address the switcher's links return to.
+   *
+   * The request's own, except in a REST request, where it is the endpoint's: the editor's preview
+   * (ServerSideRender) has no page, so it points home; another REST request (`content.rendered` of a
+   * post for a headless front end) points at the post being rendered.
+   */
+  private static function uri(): string
+  {
+    if (!wp_is_serving_rest_request()) {
+      return Url::relative((string) wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
+    }
+
+    $permalink = self::isEditorPreview() ? false : get_permalink();
+
+    if (!is_string($permalink) || $permalink === '') {
+      return '/';
+    }
+
+    // The path and query of the address, as a request URI would carry them.
+    $parts = (array) wp_parse_url($permalink);
+
+    return Url::relative(($parts['path'] ?? '/') . (isset($parts['query']) ? '?' . $parts['query'] : ''));
+  }
+
+  /**
+   * Whether this is the block editor's preview request, and not any REST request: ServerSideRender
+   * asks the `block-renderer` route. Anything else that renders the block over REST (a post's
+   * `content.rendered`) is front-end content and gets the front end's markup.
+   */
+  public static function isEditorPreview(): bool
+  {
+    if (!wp_is_serving_rest_request()) {
+      return false;
+    }
+
+    $route = $GLOBALS['wp']->query_vars['rest_route'] ?? ($_GET['rest_route'] ?? '');
+
+    return self::isEditorRoute(is_string($route) ? $route : '');
+  }
+
+  /**
+   * @param string $route A REST route, as `rest_route` holds it: `/wp/v2/block-renderer/<block>`.
+   */
+  public static function isEditorRoute(string $route): bool
+  {
+    return str_starts_with(ltrim($route, '/'), 'wp/v2/block-renderer/');
   }
 
   /**

@@ -48,7 +48,7 @@ A child theme is offered like any other theme; the visitor gets the child and, t
 
 ### Page caching
 
-A page cache keeps one copy of a page and serves it to everyone, so it can serve a visitor the wrong theme. The plugin sends `Cache-Control: no-cache` and `Vary: Cookie` on every request that carries the choice cookie, and the redirect that sets the choice is not cacheable either. If your caching plugin or host cache ignores those headers, set it to skip the cache for visitors who send the `wpcyt_theme` cookie.
+A page cache keeps one copy of a page and serves it to everyone, so it can serve a visitor the wrong theme. The plugin sends `Cache-Control: no-cache` and `Vary: Cookie` on every request that carries the choice cookie, and the redirect that sets the choice is not cacheable either. On a page shown in another theme the plugin also defines `DONOTCACHEPAGE`, which most caching plugins honour. If your caching plugin or host cache ignores both, set it to skip the cache for visitors who send the `wpcyt_theme` cookie.
 
 ## Installation
 
@@ -110,6 +110,10 @@ Yes! Please report bugs at [the support forum](https://wordpress.org/support/plu
 ### 1.1.1
 
 * Translations load through WP Bones 3.4.1, which reads the plugin's `Text Domain` and `Domain Path`; the plugin no longer loads them itself. The `Domain Path` header now has the leading slash WordPress documents.
+* Fix: only the block editor's preview is treated as the editor. A post's `content.rendered` over REST keeps the block's wrapper, and its switcher links point at the post.
+* Fix: in the editor the block's margin and font size no longer apply twice.
+* Fix: the way-back bar is no longer fixed over the last line of the page: it sits after it.
+* Fix: a page shown in another theme defines `DONOTCACHEPAGE`, so a page cache does not keep it for everyone.
 
 ### 1.1.0
 

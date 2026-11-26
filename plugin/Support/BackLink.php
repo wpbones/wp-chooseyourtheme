@@ -74,8 +74,11 @@ final class BackLink
   /**
    * Its own colours, so it reads on a light page and on a dark one; the theme's font; logical
    * properties, for right-to-left sites; no animation; not printed.
+   *
+   * Sticky, not fixed: it is printed at the end of the page, so it sits after the last line instead
+   * of covering it, and stays at the bottom of the window while there is more page above it.
    */
-  private const CSS = '.wpcyt_back{position:fixed;inset-block-end:0;inset-inline:0;z-index:99999;box-sizing:border-box;'
+  private const CSS = '.wpcyt_back{position:sticky;inset-block-end:0;z-index:99999;box-sizing:border-box;'
     . 'padding:.5em 1em;background:#1d2327;color:#fff;border-block-start:1px solid rgba(255,255,255,.35);'
     . 'font:inherit;font-size:.875rem;line-height:1.4;text-align:center}'
     . '.wpcyt_back p{margin:0;color:inherit;font:inherit}'

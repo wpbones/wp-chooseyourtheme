@@ -6,6 +6,7 @@ namespace WPChooseYourTheme\Tests\Unit;
 
 use Brain\Monkey\Functions;
 use WPChooseYourTheme\Support\Block;
+use WPChooseYourTheme\Support\Renderer;
 use WPChooseYourTheme\Support\Shortcode;
 use WPChooseYourTheme\Tests\Support\FakeTheme;
 use WPChooseYourTheme\Tests\Support\MonkeyTestCase;
@@ -123,5 +124,23 @@ final class BlockTest extends MonkeyTestCase
     );
 
     Block::register();
+  }
+
+  public function testTheEditorPreviewHasNoWrapperBecauseTheEditorDrawsItsOwn(): void
+  {
+    Functions\when('wp_is_serving_rest_request')->justReturn(true);
+
+    $GLOBALS['wp'] = (object) ['query_vars' => ['rest_route' => '/wp/v2/block-renderer/wp-chooseyourtheme/switcher']];
+    $editor = Block::render(['mode' => 'roll', 'title' => 'Pick']);
+    $this->assertStringNotContainsString('wp-block-wp-chooseyourtheme-switcher"', $editor);
+    $this->assertStringStartsWith('<p class="wp-block-wp-chooseyourtheme-switcher__title">Pick</p>', $editor);
+
+    // A post's content over REST is front-end content: it keeps the wrapper (colours, margin, alignment).
+    Renderer::reset();
+    $GLOBALS['wp'] = (object) ['query_vars' => ['rest_route' => '/wp/v2/posts/7']];
+    Functions\when('get_permalink')->justReturn(false);
+    $this->assertStringStartsWith('<div class="wp-block-wp-chooseyourtheme-switcher">', Block::render(['mode' => 'roll']));
+
+    unset($GLOBALS['wp']);
   }
 }

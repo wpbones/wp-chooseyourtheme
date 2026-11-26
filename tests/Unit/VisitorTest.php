@@ -374,4 +374,23 @@ final class VisitorTest extends MonkeyTestCase
 
     Visitor::sendHeaders();
   }
+
+  #[\PHPUnit\Framework\Attributes\RunInSeparateProcess]
+  #[\PHPUnit\Framework\Attributes\PreserveGlobalState(false)]
+  public function testAPageInAnotherThemeIsMarkedForPageCachePluginsAndTheSitesOwnThemeIsNot(): void
+  {
+    $this->blog();
+    Functions\when('nocache_headers')->justReturn(null);
+
+    // A cookie for the site's own theme changes nothing on the page: it may be cached.
+    $_COOKIE[Visitor::COOKIE] = 'mom';
+    Visitor::sendHeaders();
+    $this->assertFalse(defined('DONOTCACHEPAGE'));
+
+    // Another theme: the page is the visitor's, not everyone's.
+    Visitor::reset();
+    $_COOKIE[Visitor::COOKIE] = 'other';
+    Visitor::sendHeaders();
+    $this->assertTrue(defined('DONOTCACHEPAGE') && DONOTCACHEPAGE === true);
+  }
 }

@@ -165,4 +165,39 @@ final class RendererTest extends MonkeyTestCase
     $this->assertStringStartsWith('<form', Shortcode::render(''), 'a shortcode without attributes gets an empty string');
     $this->assertStringStartsWith('<form', Shortcode::render(['mode' => 'nonsense']));
   }
+
+  // ---- REST: the editor's preview is not every REST request ----------------------------------
+
+  public static function routes(): array
+  {
+    return [
+      'the editor preview' => ['/wp/v2/block-renderer/wp-chooseyourtheme/switcher', true],
+      'without the leading slash' => ['wp/v2/block-renderer/wp-chooseyourtheme/switcher', true],
+      'a post list' => ['/wp/v2/posts', false],
+      'a single post' => ['/wp/v2/posts/5', false],
+      'no route' => ['', false],
+    ];
+  }
+
+  #[\PHPUnit\Framework\Attributes\DataProvider('routes')]
+  public function testOnlyTheBlockRendererRouteIsTheEditorPreview(string $route, bool $editor): void
+  {
+    $this->assertSame($editor, Renderer::isEditorRoute($route));
+  }
+
+  public function testTheEditorPreviewPointsHomeAndAPostsRestContentPointsAtThePost(): void
+  {
+    $this->blog();
+    $_SERVER['REQUEST_URI'] = '/wp-json/wp/v2/posts';
+    Functions\when('wp_is_serving_rest_request')->justReturn(true);
+    Functions\when('get_permalink')->justReturn('https://example.test/2026/hello/');
+
+    $GLOBALS['wp'] = (object) ['query_vars' => ['rest_route' => '/wp/v2/block-renderer/wp-chooseyourtheme/switcher']];
+    $this->assertStringContainsString('href="/?wpcyt_theme=gamma"', Renderer::render('roll'));
+
+    $GLOBALS['wp'] = (object) ['query_vars' => ['rest_route' => '/wp/v2/posts']];
+    $this->assertStringContainsString('href="/2026/hello/?wpcyt_theme=gamma"', Renderer::render('roll'));
+
+    unset($GLOBALS['wp']);
+  }
 }

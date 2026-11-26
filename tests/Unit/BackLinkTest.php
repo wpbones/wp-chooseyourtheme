@@ -59,7 +59,9 @@ final class BackLinkTest extends MonkeyTestCase
     $this->assertStringContainsString('<a href="/blog/?s=cat&amp;wpcyt_theme=mom" rel="nofollow">Back to Mom &amp; Pop</a>', $html, 'the same page, the choice link to the active theme');
     $this->assertStringContainsString('<style id="wpcyt-back-style">', $html);
     $this->assertStringContainsString('@media print{.wpcyt_back{display:none}}', $html);
-    $this->assertStringContainsString('inset-inline:0', $html, 'logical properties');
+    $this->assertStringContainsString('inset-block-end:0', $html, 'logical properties');
+    $this->assertStringContainsString('position:sticky', $html, 'after the last line, never over it');
+    $this->assertStringNotContainsString('position:fixed', $html);
     $this->assertStringNotContainsString('transition', $html);
     $this->assertStringNotContainsString('animation', $html);
     $this->assertStringNotContainsString('<b>', $html, 'names are escaped');

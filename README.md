@@ -65,7 +65,7 @@ In a block theme put the switcher in each allowed theme's template part, or in p
 - **Child themes** set both `template` and `stylesheet`.
 - **Cookie:** `SameSite=Lax`, `HttpOnly`, `Secure` on HTTPS, lifetime in days (default 30).
 - **No JavaScript needed:** the choice is a link or a GET form to `?wpcyt_theme=<slug>`, answered by a redirect to the same page without it. A small script submits the dropdown on change.
-- **Caching:** a page cache would serve one visitor's theme to everyone. Requests that carry the cookie get `Cache-Control: no-cache` and `Vary: Cookie`; set your cache to bypass visitors with the `wpcyt_theme` cookie if it ignores them.
+- **Caching:** a page cache would serve one visitor's theme to everyone. Requests that carry the cookie get `Cache-Control: no-cache` and `Vary: Cookie`, and a page shown in another theme defines `DONOTCACHEPAGE`; set your cache to bypass visitors with the `wpcyt_theme` cookie if it ignores them.
 
 ## Requirements
 

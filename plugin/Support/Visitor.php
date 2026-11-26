@@ -267,6 +267,12 @@ class Visitor
     if (isset($_COOKIE[self::COOKIE]) && static::isFrontEnd()) {
       nocache_headers();
       header('Vary: Cookie', false);
+
+      // Cache plugins and hosts that ignore the headers above honour this constant (WP Super Cache,
+      // W3 Total Cache, WP Rocket, LiteSpeed Cache and others): a page in another theme is not kept.
+      if (static::slug() !== null && !defined('DONOTCACHEPAGE')) {
+        define('DONOTCACHEPAGE', true);
+      }
     }
   }
 
