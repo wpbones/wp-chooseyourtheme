@@ -19,7 +19,8 @@ final class Themes
    */
   public static function activeSlug(): string
   {
-    return (string) get_option('stylesheet');
+    // Not through the visitor's choice, which also answers for the option.
+    return Visitor::withoutChoice(static fn (): string => (string) get_option('stylesheet'));
   }
 
   /**

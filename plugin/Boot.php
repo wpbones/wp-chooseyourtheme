@@ -26,6 +26,12 @@ final class Boot
     // without a cookie they return what they are given.
     add_filter('template', [Visitor::class, 'filterTemplate']);
     add_filter('stylesheet', [Visitor::class, 'filterStylesheet']);
+    // The same for the options core reads directly, as the Customizer's theme preview does.
+    add_filter('pre_option_stylesheet', [Visitor::class, 'preStylesheet']);
+    add_filter('pre_option_template', [Visitor::class, 'preTemplate']);
+    add_filter('pre_option_current_theme', [Visitor::class, 'preCurrentTheme']);
+    add_filter('pre_option_stylesheet_root', [Visitor::class, 'preStylesheetRoot']);
+    add_filter('pre_option_template_root', [Visitor::class, 'preTemplateRoot']);
     add_action('send_headers', [Visitor::class, 'sendHeaders']);
 
     add_action('init', [self::class, 'init'], 0);

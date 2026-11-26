@@ -127,6 +127,20 @@ final class RendererTest extends MonkeyTestCase
     $this->assertStringContainsString('Gamma &lt;b&gt;', $html);
   }
 
+  public function testANumericThemeFolderNameStillWorks(): void
+  {
+    // PHP turns the array key "2024" into an int.
+    $this->site('2024', [new FakeTheme('2024', 'Year'), new FakeTheme('beta', 'Beta')], ['allowed_themes' => ['beta']]);
+    Functions\when('get_stylesheet')->justReturn('2024');
+    $_SERVER['REQUEST_URI'] = '/';
+
+    $this->assertStringContainsString('<option value="2024" selected=\'selected\'>Year</option>', Renderer::render('menu'));
+    $this->assertStringContainsString('<li class="year selected">', Renderer::render('list'));
+    $this->assertStringContainsString('wpcyt_theme=beta', Renderer::render('roll'));
+    Functions\when('get_stylesheet')->justReturn('beta');
+    $this->assertStringContainsString('wpcyt_theme=2024', Renderer::render('roll'), 'and it cycles back to 2024');
+  }
+
   public function testAnUnknownModeIsTheMenu(): void
   {
     $this->assertSame('menu', Renderer::normalizeMode('rand'));

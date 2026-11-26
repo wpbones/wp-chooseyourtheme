@@ -125,6 +125,65 @@ final class VisitorTest extends MonkeyTestCase
     $this->assertSame('other', Visitor::filterStylesheet('mom'));
   }
 
+  // ---- what core reads straight from the options ------------------------------------------------
+
+  public function testTheOptionsCoreReadsDirectlyFollowTheChoice(): void
+  {
+    $this->blog();
+    $_COOKIE[Visitor::COOKIE] = 'other';
+
+    // get_theme_mods() reads get_option('stylesheet'): through this filter, the chosen theme's mods.
+    $this->assertSame('other', Visitor::preStylesheet(false));
+    $this->assertSame('other', Visitor::preTemplate(false));
+    $this->assertSame('Other', Visitor::preCurrentTheme(false));
+    $this->assertSame('/themes', Visitor::preStylesheetRoot(false));
+    $this->assertSame('/themes', Visitor::preTemplateRoot(false));
+  }
+
+  public function testTheOptionsAreLeftAloneWithoutAValidChoice(): void
+  {
+    $this->blog();
+    $_COOKIE[Visitor::COOKIE] = 'hidden';
+
+    foreach (['preStylesheet', 'preTemplate', 'preCurrentTheme', 'preStylesheetRoot', 'preTemplateRoot'] as $filter) {
+      $this->assertFalse(Visitor::$filter(false), $filter);
+    }
+  }
+
+  public function testTheSitesOwnThemeIsStillReadableOnceTheVisitorHasAChoice(): void
+  {
+    $this->blog();
+    $_COOKIE[Visitor::COOKIE] = 'other';
+    // WordPress runs pre_option_stylesheet inside get_option('stylesheet').
+    Functions\when('get_option')->alias(function ($name, $default = false) {
+      return match ($name) {
+        'stylesheet' => Visitor::preStylesheet(false) ?: 'mom',
+        'wp_chooseyourtheme_settings' => ['allowed_themes' => ['other']],
+        default => $default,
+      };
+    });
+
+    $this->assertSame('other', Visitor::filterStylesheet('mom'));
+    $this->assertSame('mom', \WPChooseYourTheme\Support\Themes::activeSlug());
+    $this->assertSame('other', Visitor::preStylesheet(false), 'and the visitor is still shown theirs');
+  }
+
+  public function testTheDecisionIsPerSiteOfANetwork(): void
+  {
+    $this->blog();
+    $_COOKIE[Visitor::COOKIE] = 'other';
+
+    $this->assertSame('other', Visitor::filterStylesheet('mom'));
+
+    // switch_to_blog(2): a site where the same cookie names a theme that is not allowed.
+    $GLOBALS['wpcyt_test_blog'] = 2;
+    $this->blog(['allowed_themes' => []]);
+    $this->assertSame('mom', Visitor::filterStylesheet('mom'));
+
+    $GLOBALS['wpcyt_test_blog'] = 1;
+    $this->assertSame('other', Visitor::filterStylesheet('mom'), 'back on the first site, its own decision');
+  }
+
   // ---- where it is applied --------------------------------------------------------------------
 
   public function testItIsAFrontEndRequest(): void

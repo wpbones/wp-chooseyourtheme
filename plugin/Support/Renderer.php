@@ -71,6 +71,7 @@ final class Renderer
     $html .= '<select class="wpcyt_combo" id="' . esc_attr($id) . '" name="' . esc_attr(Visitor::PARAM) . '">';
 
     foreach ($themes as $slug => $theme) {
+      $slug = (string) $slug;
       $html .= '<option value="' . esc_attr($slug) . '"' . selected($slug, $current, false) . '>' . esc_html((string) $theme->get('Name')) . '</option>';
     }
 
@@ -88,6 +89,7 @@ final class Renderer
     $html = '<ul class="wpcyt_list">';
 
     foreach ($themes as $slug => $theme) {
+      $slug = (string) $slug;
       $name = (string) $theme->get('Name');
       $isCurrent = $slug === $current;
       $class = self::cssClass($name) . ($isCurrent ? ' selected' : '');
@@ -104,7 +106,8 @@ final class Renderer
    */
   private static function roll(array $themes, string $current, string $uri): string
   {
-    $slugs = array_keys($themes);
+    // PHP turns a numeric folder name such as "2024" into an int key.
+    $slugs = array_map('strval', array_keys($themes));
     $position = array_search($current, $slugs, true);
     $next = $slugs[($position === false ? 0 : $position + 1) % count($slugs)];
     $name = (string) $themes[$next]->get('Name');

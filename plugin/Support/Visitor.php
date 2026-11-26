@@ -25,11 +25,16 @@ class Visitor
   private const PREVIEW_ARGS = ['customize_changeset_uuid', 'customize_theme', 'wp_customize', 'wp_theme_preview'];
 
   /**
-   * @var array{slug: ?string, template: ?string}|null The decision for this request, once taken.
+   * @var array<int, array{slug: ?string, template: ?string, name: ?string, stylesheet_root: ?string, template_root: ?string}>
+   *      The decision for this request, once taken, by blog: on a network the code can switch_to_blog(),
+   *      and a theme validated for one site says nothing about another.
    */
-  private static ?array $decision = null;
+  private static array $decisions = [];
 
   private static bool $deciding = false;
+
+  /** While above zero the filters stand aside: the caller wants the site's own theme. */
+  private static int $bypass = 0;
 
   /**
    * Whether this request is a page of the public site.
@@ -98,24 +103,82 @@ class Visitor
   }
 
   /**
-   * Forget the decision taken for this request.
+   * `pre_option_stylesheet`, like the Customizer's theme preview: core reads some of what belongs to a
+   * theme straight from the option (get_theme_mods() reads the theme mods of get_option('stylesheet')),
+   * so without this the visitor would get the chosen theme with the active theme's logo, colours and
+   * menus.
    */
-  public static function reset(): void
+  public static function preStylesheet($pre)
   {
-    self::$decision = null;
-    self::$deciding = false;
+    return self::decide()['slug'] ?? $pre;
+  }
+
+  public static function preTemplate($pre)
+  {
+    return self::decide()['template'] ?? $pre;
+  }
+
+  public static function preCurrentTheme($pre)
+  {
+    return self::decide()['name'] ?? $pre;
+  }
+
+  public static function preStylesheetRoot($pre)
+  {
+    return self::decide()['stylesheet_root'] ?? $pre;
+  }
+
+  public static function preTemplateRoot($pre)
+  {
+    return self::decide()['template_root'] ?? $pre;
   }
 
   /**
-   * @return array{slug: ?string, template: ?string}
+   * Run $callback with the choice switched off: what it reads is the site's own theme.
+   *
+   * @template T
+   * @param callable(): T $callback
+   * @return T
+   */
+  public static function withoutChoice(callable $callback)
+  {
+    self::$bypass++;
+
+    try {
+      return $callback();
+    } finally {
+      self::$bypass--;
+    }
+  }
+
+  /**
+   * Forget the decisions taken for this request.
+   */
+  public static function reset(): void
+  {
+    self::$decisions = [];
+    self::$deciding = false;
+    self::$bypass = 0;
+  }
+
+  /**
+   * @return array{slug: ?string, template: ?string, name: ?string, stylesheet_root: ?string, template_root: ?string}
    */
   private static function decide(): array
   {
-    if (self::$decision !== null) {
-      return self::$decision;
+    $none = ['slug' => null, 'template' => null, 'name' => null, 'stylesheet_root' => null, 'template_root' => null];
+
+    // The REST server defines this only after the theme is loaded, so isFrontEnd() cannot see it at
+    // first; a filter asked again later can.
+    if (self::$bypass > 0 || (defined('REST_REQUEST') && REST_REQUEST)) {
+      return $none;
     }
 
-    $none = ['slug' => null, 'template' => null];
+    $blog = (int) get_current_blog_id();
+
+    if (isset(self::$decisions[$blog])) {
+      return self::$decisions[$blog];
+    }
 
     // Deciding asks WordPress about themes, which asks for the active theme, which comes back here.
     if (self::$deciding) {
@@ -126,7 +189,7 @@ class Visitor
 
     // The common case, no cookie, costs nothing: no theme is looked up.
     if ($slug === null) {
-      return self::$decision = $none;
+      return self::$decisions[$blog] = $none;
     }
 
     self::$deciding = true;
@@ -138,14 +201,21 @@ class Visitor
         $theme = Themes::get($slug);
 
         if ($theme !== null) {
-          $decision = ['slug' => $slug, 'template' => (string) $theme->get_template()];
+          $template = (string) $theme->get_template();
+          $decision = [
+            'slug' => $slug,
+            'template' => $template,
+            'name' => (string) $theme->get('Name'),
+            'stylesheet_root' => (string) get_raw_theme_root($slug, true),
+            'template_root' => (string) get_raw_theme_root($template, true),
+          ];
         }
       }
     } finally {
       self::$deciding = false;
     }
 
-    return self::$decision = $decision;
+    return self::$decisions[$blog] = $decision;
   }
 
   /**

@@ -24,6 +24,7 @@ abstract class MonkeyTestCase extends TestCase
     $_SERVER['REQUEST_URI'] = '/';
     $_SERVER['REQUEST_METHOD'] = 'GET';
     unset($GLOBALS['pagenow']);
+    $GLOBALS['wpcyt_test_blog'] = 1;
     Visitor::reset();
 
     // The unit tests have no WordPress; these are the plain behaviours the code leans on.
@@ -32,6 +33,8 @@ abstract class MonkeyTestCase extends TestCase
       'trailingslashit' => static fn ($value) => rtrim((string) $value, '/\\') . '/',
       'wp_parse_url' => static fn ($url, $component = -1) => parse_url((string) $url, $component),
       'rest_get_url_prefix' => 'wp-json',
+      'get_current_blog_id' => static fn () => $GLOBALS['wpcyt_test_blog'],
+      'get_raw_theme_root' => static fn ($slug, $skip = false) => '/themes',
       'esc_html' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
       'esc_attr' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
       'esc_url' => static fn ($value) => htmlspecialchars((string) $value, ENT_QUOTES),
