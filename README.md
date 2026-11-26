@@ -65,6 +65,7 @@ Install it from the WordPress.org plugin directory, or copy a deploy package to 
 ```bash
 composer install
 composer test           # PHPUnit + Brain Monkey, no WordPress needed
+tests/live/probe.sh <plugin folder> <WordPress folder> <classic|block|mixed>   # live probe in a local Playground (see the script header)
 php bones               # Bones CLI
 php bones deploy <path> --wp --no-build   # package for WordPress.org (no JavaScript is built, so no yarn install)
 ```
