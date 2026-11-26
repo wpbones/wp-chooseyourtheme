@@ -62,6 +62,8 @@ A page cache keeps one copy of a page and serves it to everyone, so it can serve
 1. Appearance › WP Choose Your Theme: the installed themes, their kind and whether visitors may choose them, and how long the choice is remembered
 2. A visitor switched to Twenty Twenty-Four with the dropdown (menu mode, through the shortcode)
 3. List mode: a link to every theme visitors may choose
+4. The Theme Switcher block in the editor, with its settings: a list, a dropdown or one link to the next theme, and an optional title
+5. The way back: a visitor who chose another theme, on a page with no switcher, gets a link back to the site's own theme
 
 ## FAQ
 
