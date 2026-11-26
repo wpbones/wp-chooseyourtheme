@@ -1,0 +1,12 @@
+{
+  "name": "@gfazioli/wp-chooseyourtheme",
+  "version": "1.0.0",
+  "description": "Let your visitors choose which of your installed themes they see the site with.",
+  "private": true,
+  "license": "GPL-2.0-or-later",
+  "author": "Giovambattista Fazioli <giovambattista.fazioli@gmail.com>",
+  "scripts": {
+    "make-pot": "wp i18n make-pot . languages/wp-chooseyourtheme.pot --slug=wp-chooseyourtheme --domain=wp-chooseyourtheme --exclude=node_modules,vendor,tests,languages",
+    "test": "composer test"
+  }
+}

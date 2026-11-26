@@ -1,0 +1,47 @@
+{
+  "name": "gfazioli/wp-chooseyourtheme",
+  "type": "wordpress-plugin",
+  "description": "Let your visitors choose which of your installed themes they see the site with.",
+  "keywords": [
+    "wordpress",
+    "theme",
+    "theme switcher"
+  ],
+  "homepage": "https://wordpress.org/plugins/wp-chooseyourtheme/",
+  "license": "GPL-2.0-or-later",
+  "authors": [
+    {
+      "name": "Giovambattista Fazioli",
+      "email": "giovambattista.fazioli@gmail.com",
+      "homepage": "http://undolog.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "wpbones/wpbones": "^3.4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPChooseYourTheme\\": "plugin/"
+    },
+    "files": [
+      "functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WPChooseYourTheme\\Tests\\": "tests/"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "php -r \"copy('vendor/wpbones/wpbones/src/Console/bin/bones', 'bones');\"",
+      "php bones rename --update"
+    ],
+    "test": "phpunit"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.5 || ^11.0",
+    "brain/monkey": "^2.7"
+  }
+}

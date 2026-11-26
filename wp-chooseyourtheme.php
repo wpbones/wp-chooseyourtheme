@@ -1,50 +1,47 @@
 <?php
-/*
-Plugin Name: WP-CHOOSE YOUR THEME
-Plugin URI: http://wordpress.org/extend/plugins/wp-chooseyourtheme/
-Description: WP-CHOOSE YOUR THEME let to select an avaiable theme to your visitors. For more info and plugins visit <a href="http://labs.saidmade.com">Labs Saidmade</a>.
-Version: 0.6
-Author: Giovambattista Fazioli
-Author URI: http://www.undolog.com
-Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
- 
-	Copyright 2009 Saidmade Srl (email : g.fazioli@undolog.com)
 
-	This program is free software; you can redistribute it and/or modify
-	it under the terms of the GNU General Public License as published by
-	the Free Software Foundation; either version 2 of the License, or
-	(at your option) any later version.
-	
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	GNU General Public License for more details.
-	
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to the Free Software
-	Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-	
-	
-	CHANGE LOG
-	
-	* 0.6     Rev HTML output for list and roll mode: add slug theme name class
-	* 0.5     Add Admin in backend under Appearance. Rev code and avoid Javascript.
-	* 0.2     Rev
-	* 0.1     First release
+/**
+ * Plugin Name: WP Choose Your Theme
+ * Plugin URI: https://wordpress.org/plugins/wp-chooseyourtheme/
+ * Description: Let your visitors choose which of your installed themes they see the site with: a dropdown, a list or a single "next theme" link, by template tag, shortcode or widget.
+ * Version: 1.0.0
+ * Requires at least: 6.6
+ * Requires PHP: 8.1
+ * Author: Giovambattista Fazioli
+ * Author URI: http://undolog.com
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+ * Text Domain: wp-chooseyourtheme
+ * Domain Path: languages
+ */
 
-*/
-
-require_once( 'wp-chooseyourtheme_class.php');
-
-if( is_admin() ) {
-	require_once( 'wp-chooseyourtheme_admin.php' );
-	//
-	$wp_chooseyourtheme_admin = new WPCHOOSEYOURTHEME_ADMIN();
-	$wp_chooseyourtheme_admin->register_plugin_settings( __FILE__ );
-} else {
-	require_once( 'wp-chooseyourtheme_client.php');
-	$wp_chooseyourtheme_client = new WPCHOOSEYOURTHEME_CLIENT();
-	require_once( 'wp-chooseyourtheme_functions.php');
+if (!defined('ABSPATH')) {
+  exit();
 }
 
-?>
+/*
+|--------------------------------------------------------------------------
+| Register The Auto Loader
+|--------------------------------------------------------------------------
+|
+| Composer provides a convenient, automatically generated class loader for
+| our application. We just need to utilize it! We'll simply require it
+| into the script here so that we don't have to worry about manual
+| loading any of our classes later on. It feels nice to relax.
+|
+*/
+
+require_once __DIR__ . '/bootstrap/autoload.php';
+
+/*
+|--------------------------------------------------------------------------
+| Early hooks
+|--------------------------------------------------------------------------
+|
+| WordPress asks for the active theme before `init`, so the filters that
+| apply the visitor's choice cannot wait for a service provider: they are
+| registered here, as soon as the plugin loads. Everything they do is lazy.
+|
+*/
+
+\WPChooseYourTheme\Boot::hooks(__FILE__);
