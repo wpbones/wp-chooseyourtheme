@@ -6,6 +6,7 @@ Let your visitors choose which of your installed themes they see the site with: 
 [![WordPress Plugin Required PHP Version](https://img.shields.io/wordpress/plugin/required-php/wp-chooseyourtheme)](https://wordpress.org/plugins/wp-chooseyourtheme/)
 [![WordPress Plugin Tested WP Version](https://img.shields.io/wordpress/plugin/tested/wp-chooseyourtheme)](https://wordpress.org/plugins/wp-chooseyourtheme/)
 [![License](https://img.shields.io/badge/license-GPLv2-blue.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
+[![Try it in WordPress Playground](https://img.shields.io/badge/Try%20it-WordPress%20Playground-3858e9?logo=wordpress&logoColor=white)](https://playground.wordpress.net/?blueprint-url=https://raw.githubusercontent.com/wpbones/wp-chooseyourtheme/main/assets/blueprints/blueprint.json)
 
 <div align="center">
   <p><img src="https://raw.githubusercontent.com/wpbones/.github/main/glancecard/wp-chooseyourtheme.svg" width="880" alt="WP Choose Your Theme at a glance, refreshed daily: commits, releases, stars, issues and pull requests, a year of commit activity, the weekly rhythm, languages, latest commits and releases, contributors" /><br>
