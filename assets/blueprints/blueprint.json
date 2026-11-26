@@ -1,0 +1,31 @@
+{
+  "$schema": "https://playground.wordpress.net/blueprint-schema.json",
+  "landingPage": "/wp-admin/themes.php?page=wp-chooseyourtheme",
+  "preferredVersions": {
+    "php": "8.2",
+    "wp": "latest"
+  },
+  "phpExtensionBundles": [
+    "kitchen-sink"
+  ],
+  "features": {
+    "networking": true
+  },
+  "steps": [
+    {
+      "step": "installPlugin",
+      "pluginData": {
+        "resource": "wordpress.org/plugins",
+        "slug": "wp-chooseyourtheme"
+      },
+      "options": {
+        "activate": true
+      }
+    },
+    {
+      "step": "login",
+      "username": "admin",
+      "password": "password"
+    }
+  ]
+}

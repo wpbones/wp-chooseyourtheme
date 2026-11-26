@@ -1,85 +1,134 @@
- === WP CHOOSE YOUR THEME ===
-Contributors: Giovambattista Fazioli
-Donate link: http://labs.saidmade.com
-Tags: Theme, Manager,
-Requires at least: 2.7.1
-Tested up to: 2.7.1
-Stable tag: 0.6
+# WP Choose Your Theme
+Contributors: gfazioli
+Donate link: https://www.paypal.com/donate/?hosted_button_id=TBPD4R78VDMCJ
+Tags: theme, switcher, visitors, shortcode, widget
+Requires at least: 6.6
+Tested up to: 7.2
+Stable tag: 1.0.0
+Requires PHP: 8.1
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-WP CHOOSE YOUR THEME, let to select an avaiable theme to your visitors.
+Let your visitors choose which of your installed themes they see the site with: a dropdown, a list or a single "next theme" link.
 
-== Description ==
+## Description
 
-WP CHOOSE YOUR THEME, let to select an avaiable theme to your visitors. In your template, for example in sidebar.php, insert: `<?php wp_chooseyourtheme(); ?>` and a combo menu list shows the themes avaiable. When a your visitor click on item, the theme is changed.
-For defautl all themes are shows. Use Admin configuration `Appearance -> WP Choose Your Theme` to hidden some themes.
+WP Choose Your Theme lets a visitor pick the theme they see your site with, from the themes you installed and allowed. Their choice is remembered in their own browser; you, your other visitors and wp-admin keep using the active theme.
 
-= Arguments =
+Put the switcher where you want it, in three ways and three looks:
 
-You can set args `mode` in:
+* **Widget** — Appearance › Widgets, "Choose Your Theme".
+* **Shortcode** — `[wp_chooseyourtheme mode="list"]`, in a post, a page or a text block.
+* **Template tag** — `<?php wp_chooseyourtheme( 'mode=roll' ); ?>`, in a theme file such as `sidebar.php`.
 
-*COMBO MENU*
+The three modes:
 
-`<?php wp_chooseyourtheme(); ?>` for combo menu or
-`<?php wp_chooseyourtheme("mode=menu"); ?>`
+* `menu` (the default) — a dropdown. It works without JavaScript, with a button; with JavaScript it changes the theme as soon as you pick one.
+* `list` — a list of links, one per theme; the current one has the class `selected`.
+* `roll` — one link to the next theme, in alphabetical order, going back to the first after the last.
 
-`
-<select class="wpcyt_combo">
- <option>Theme name 1</option>
- <option>Theme name 2</option>
- <option>Theme name ...</option>
-</select>
-`
+= Safe by default =
 
-*LIST*
+* **A new site offers nothing but its active theme.** Open Appearance › WP Choose Your Theme and tick the themes you want visitors to be able to pick. A theme you keep installed for other reasons (an old one, one you are working on) is never public unless you say so.
+* **A visitor can only ever get a theme you allowed.** The browser stores the theme's folder name; anything else, a theme you did not allow, a theme that is not installed, a child theme whose parent is missing, is ignored and the visitor sees the active theme.
+* **Only the public site changes.** wp-admin, the REST API, Ajax, cron, the login screen, the Customizer and theme previews always use the active theme.
+* **Block and classic themes are not mixed.** They keep templates, menus and widget areas in different places, so a visitor is only offered themes of the same kind as your active theme. (A developer can lift this with the `wp_chooseyourtheme_allow_mixed_kinds` filter.)
+* The choice is a cookie with `SameSite=Lax` and `HttpOnly` (and `Secure` on HTTPS), with the lifetime you set, 30 days by default.
 
-`<?php wp_chooseyourtheme("mode=list"); ?>` for list. 
+### Child themes
 
-`
-<ul class="wpcyt_list">
- <li class="theme-name-1"><a href="..."><span>Theme name 1</span></a></li>
- <li class="theme-name-2 selected"><a href="..."><span>Theme name 2</span></a></li>
- <li class="theme-name-..."><a href="..."><span>Theme name ...</span></a></li>
-</ul>
-`
+A child theme is offered like any other theme; the visitor gets the child and, through it, its parent.
 
-*ROLL*
+### Page caching
 
-`<?php wp_chooseyourtheme("mode=roll"); ?>` for roll.
+A page cache keeps one copy of a page and serves it to everyone, so it can serve a visitor the wrong theme. The plugin sends `Cache-Control: no-cache` and `Vary: Cookie` on every request that carries the choice cookie, and the redirect that sets the choice is not cacheable either. If your caching plugin or host cache ignores those headers, set it to skip the cache for visitors who send the `wpcyt_theme` cookie.
 
-`
-<div class="wpcyt_roll">
- <a class="next-theme" href="#"><span>Next Theme</span></a>
-</div>
-`
+## Installation
 
-= Related Links =
+1. Upload the entire content of the plugin archive to your `/wp-content/plugins/` directory, so that everything is in `/wp-content/plugins/wp-chooseyourtheme/`.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Open Appearance › WP Choose Your Theme and tick the themes visitors may choose.
+4. Add the widget, the shortcode or the template tag where you want the switcher.
 
-* [Saidmade](http://www.saidmade.com/ "Creazione siti Web")
-* [Undolog](http://www.undolog.com/ "Author's Web")
+## Screenshots
 
-== Screenshots ==
+1. Appearance › WP Choose Your Theme: the allowed themes and the cookie lifetime
+2. The dropdown in a sidebar
+3. The list of links
+4. The widget form in Appearance › Widgets
 
-== Installation ==
+## FAQ
 
-1. Upload the entire content of plugin archive to your `/wp-content/plugins/` directory, 
-   so that everything will remain in a `/wp-content/plugins/wp-chooseyourtheme/` folder
-2. Activate the plugin through the 'Plugins' menu in WordPress (deactivate and reactivate if you're upgrading).
-3. Open the plugin configuration page, which is located under `Appearance -> WP Choose Your Theme`
-4. Select the Themes you want to make hidden
-5. Insert in your template php `<?php wp-chooseyourtheme(); ?>` function
-6. Done. Enjoy.
+= 1. Does it change the theme of my site? =
+No. The active theme stays what it is, for you and for every visitor who does not choose. A choice shows only to the visitor who made it, in that browser.
 
-== Thanks ==
+= 2. Which themes does a visitor see in the switcher? =
+Your active theme, plus the installed themes you ticked in Appearance › WP Choose Your Theme, that have no errors and are of the same kind (block or classic) as the active one. If that leaves only one theme, the switcher shows nothing.
 
-== Frequently Asked Questions == 
+= 3. A visitor picked a theme and sees an empty sidebar or no menu. =
+Widgets, menus and Customizer settings belong to a theme. A theme that has never been set up on your site starts with none. Activate it once, set it up, and activate your own theme back; or assign its widget areas and menus in the Customizer or the Site Editor.
 
-== Changelog ==
+= 4. Can visitors pick a block theme on a classic site, or the other way round? =
+Not by default, see "Safe by default". A developer can allow it with the `wp_chooseyourtheme_allow_mixed_kinds` filter, on their own tests: the two kinds do not share widget areas, and a block theme has no classic widget areas or template files to call the template tag from (the shortcode works in any post or page).
 
-History release:
+= 5. The visitor's choice seems ignored, or they see someone else's theme. =
+A page cache is serving a stored copy. See "Page caching" above.
 
-`
-* 0.6     Rev HTML output for list and roll mode: add slug theme name class
-* 0.5     Add Admin in backend under Appearance. Rev code and avoid Javascript.
-* 0.2     Rev
-* 0.1     First release
-`
+= 6. What does the cookie hold? =
+The folder name of the theme (for example `twentytwentyfive`) and nothing else, no identifier, no personal data. It is named `wpcyt_theme`.
+
+= 7. I used 0.x. What happens to my settings? =
+The first time 1.0 loads, every installed theme you had not hidden becomes an allowed theme. Visitors' old cookies (named `wpcyt_name`) are no longer read: each visitor picks again, once. The template tag `wp_chooseyourtheme()` and its three modes work as before.
+
+= 8. Can I change how it looks? =
+The output has plain classes: `wpcyt_form`, `wpcyt_combo`, `wpcyt_submit`, `wpcyt_list`, `wpcyt_roll`, and on each list item the theme's name as a class, plus `selected` for the current one.
+
+## Changelog
+
+### 1.0.0
+
+A rewrite of the plugin for current WordPress, on the [WP Bones](https://wpbones.com) framework. If you are updating from 0.x, read this.
+
+**What stays**
+
+* The template tag `wp_chooseyourtheme()` and its modes `menu`, `list` and `roll`, with the same CSS classes (`wpcyt_combo`, `wpcyt_list`, `wpcyt_roll`, the theme name on each list item, `selected` on the current one)
+* Appearance › WP Choose Your Theme is still where you configure it
+* Your settings: every theme you had not hidden becomes an allowed theme the first time 1.0 loads
+
+**What changed**
+
+* Requires WordPress 6.6 and PHP 8.1 (0.x did not work on PHP 8: its classes used PHP 4 constructors, which PHP 8 no longer calls, and it relied on `get_themes()` and `get_current_theme()`, deprecated since WordPress 3.4)
+* New: the choice is stored by theme folder name, in a cookie with `SameSite=Lax` and `HttpOnly`, instead of by theme name in a cookie written by JavaScript. Visitors choose again once: 0.x cookies are not read
+* New: a theme is applied only if it is allowed, installed and without errors; the active theme is used otherwise. Child themes are applied with their parent
+* New: it applies on the public site only, never in wp-admin, the REST API, Ajax, cron, the login screen, the Customizer or theme previews
+* New: block themes and classic themes are not mixed: only themes of the same kind as the active one are offered
+* New: the choice works without JavaScript, with a link or a form that redirects back to the same page; the dropdown submits itself when JavaScript is on
+* New: the shortcode `[wp_chooseyourtheme mode="menu|list|roll"]` and a classic widget
+* New: you set how many days the choice is remembered (30 by default)
+* New: pages for visitors who made a choice are sent with `no-cache` and `Vary: Cookie`, so a page cache does not mix visitors up
+* Changed: you now list the themes that are **allowed**, not the ones that are hidden. A new installation allows no theme but the active one
+* Changed: the settings are saved with a nonce and the `manage_options` capability, and every value is validated
+* Changed: every string is translatable; Italian, Spanish, French, German and Brazilian Portuguese are included
+* Changed: the plugin removes its options when you delete it
+* Removed: the `rand` mode, which 0.x listed as a future idea and never implemented
+
+### 0.6
+
+* Rev HTML output for list and roll mode: add slug theme name class
+
+### 0.5
+
+* Add Admin in backend under Appearance. Rev code and avoid Javascript.
+
+### 0.2
+
+* Rev
+
+### 0.1
+
+* First release
+
+## Upgrade Notice
+
+### 1.0.0
+A rewrite: it needs WordPress 6.6 and PHP 8.1. The template tag and the settings carry over (themes that were not hidden become allowed); visitors choose their theme again once. Block and classic themes are no longer mixed.
