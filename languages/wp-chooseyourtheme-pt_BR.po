@@ -1,0 +1,182 @@
+# Copyright (C) 2026 Giovambattista Fazioli
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: WP Choose Your Theme 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-chooseyourtheme\n"
+"Last-Translator: Giovambattista Fazioli\n"
+"Language-Team: Português do Brasil\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-11-26T08:28:38+00:00\n"
+"PO-Revision-Date: 2026-11-26 00:00+0000\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: wp-chooseyourtheme\n"
+
+#. Plugin Name of the plugin
+#: wp-chooseyourtheme.php
+#: plugin/Admin/SettingsPage.php:32
+#: plugin/Admin/SettingsPage.php:33
+#: resources/views/settings.php:30
+msgid "WP Choose Your Theme"
+msgstr "WP Choose Your Theme"
+
+#. Plugin URI of the plugin
+#: wp-chooseyourtheme.php
+msgid "https://wordpress.org/plugins/wp-chooseyourtheme/"
+msgstr "https://wordpress.org/plugins/wp-chooseyourtheme/"
+
+#. Description of the plugin
+#: wp-chooseyourtheme.php
+msgid "Let your visitors choose which of your installed themes they see the site with: a dropdown, a list or a single \"next theme\" link, by template tag, shortcode or widget."
+msgstr "Deixe seus visitantes escolherem com qual dos seus temas instalados veem o site: um menu suspenso, uma lista ou um único link «próximo tema», por template tag, shortcode ou widget."
+
+#. Author of the plugin
+#: wp-chooseyourtheme.php
+msgid "Giovambattista Fazioli"
+msgstr "Giovambattista Fazioli"
+
+#. Author URI of the plugin
+#: wp-chooseyourtheme.php
+msgid "http://undolog.com"
+msgstr "http://undolog.com"
+
+#: plugin/Admin/SettingsPage.php:65
+msgid "Settings"
+msgstr "Configurações"
+
+#: plugin/Support/Renderer.php:70
+#: resources/views/settings.php:43
+msgid "Theme"
+msgstr "Tema"
+
+#: plugin/Support/Renderer.php:78
+msgid "Change theme"
+msgstr "Mudar tema"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:20
+msgid "Choose Your Theme"
+msgstr "Escolha seu tema"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:23
+msgid "Let visitors choose which theme they see the site with."
+msgstr "Deixe os visitantes escolherem com qual tema veem o site."
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:64
+msgid "Dropdown menu"
+msgstr "Menu suspenso"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:65
+msgid "List of links"
+msgstr "Lista de links"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:66
+msgid "One link to the next theme"
+msgstr "Um link para o próximo tema"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:70
+msgid "Title:"
+msgstr "Título:"
+
+#: plugin/Widgets/ThemeSwitcherWidget.php:74
+msgid "Show as:"
+msgstr "Mostrar como:"
+
+#: resources/views/settings.php:19
+msgid "Block theme"
+msgstr "Tema de blocos"
+
+#: resources/views/settings.php:20
+msgid "Classic theme"
+msgstr "Tema clássico"
+
+#: resources/views/settings.php:25
+msgid "Not offered: the active theme is a block theme"
+msgstr "Não oferecido: o tema ativo é um tema de blocos"
+
+#: resources/views/settings.php:26
+msgid "Not offered: the active theme is a classic theme"
+msgstr "Não oferecido: o tema ativo é um tema clássico"
+
+#: resources/views/settings.php:32
+msgid "Choose which of your installed themes a visitor may pick. The visitor sees the site with that theme; you and the other visitors keep the active one."
+msgstr "Escolha quais dos seus temas instalados um visitante pode selecionar. O visitante vê o site com esse tema; você e os outros visitantes continuam com o tema ativo."
+
+#: resources/views/settings.php:37
+msgid "Themes visitors may choose"
+msgstr "Temas que os visitantes podem escolher"
+
+#: resources/views/settings.php:42
+msgid "Allowed"
+msgstr "Permitido"
+
+#: resources/views/settings.php:44
+msgid "Kind"
+msgstr "Tipo"
+
+#: resources/views/settings.php:45
+msgid "Status"
+msgstr "Status"
+
+#. translators: %s: the name of a parent theme.
+#: resources/views/settings.php:70
+#, php-format
+msgid "Child of %s"
+msgstr "Filho de %s"
+
+#: resources/views/settings.php:79
+msgid "Active: always available"
+msgstr "Ativo: sempre disponível"
+
+#: resources/views/settings.php:83
+msgid "Visitors may choose it"
+msgstr "Os visitantes podem escolhê-lo"
+
+#: resources/views/settings.php:85
+msgid "Hidden from visitors"
+msgstr "Oculto para os visitantes"
+
+#: resources/views/settings.php:95
+msgid "Block themes and classic themes keep their templates, menus and widget areas in different places, so a visitor is only ever switched to a theme of the same kind as the active one."
+msgstr "Temas de blocos e temas clássicos guardam templates, menus e áreas de widgets em lugares diferentes; por isso um visitante só é levado para um tema do mesmo tipo que o ativo."
+
+#: resources/views/settings.php:98
+msgid "Remember the choice"
+msgstr "Lembrar a escolha"
+
+#: resources/views/settings.php:102
+msgid "Days"
+msgstr "Dias"
+
+#. translators: 1: the smallest number of days, 2: the largest.
+#: resources/views/settings.php:108
+#, php-format
+msgid "How long a visitor's browser remembers the theme they chose, from %1$d to %2$d days."
+msgstr "Por quanto tempo o navegador do visitante lembra o tema escolhido, de %1$d a %2$d dias."
+
+#: resources/views/settings.php:118
+msgid "Show the switcher"
+msgstr "Mostrar o seletor"
+
+#: resources/views/settings.php:120
+msgid "Three ways in, each with the same three modes: menu (a dropdown), list (a list of links) and roll (one link to the next theme)."
+msgstr "Três formas de inserir, cada uma com os mesmos três modos: menu (suspenso), list (lista de links) e roll (um único link para o próximo tema)."
+
+#: resources/views/settings.php:122
+msgid "Widget: Appearance › Widgets, \"Choose Your Theme\"."
+msgstr "Widget: Aparência › Widgets, «Escolha seu tema»."
+
+#: resources/views/settings.php:123
+msgid "Shortcode:"
+msgstr "Shortcode:"
+
+#: resources/views/settings.php:124
+msgid "Template tag:"
+msgstr "Template tag:"
+
+#: resources/views/settings.php:128
+msgid "A page cache serves one copy of a page to everyone. If a caching plugin or your host caches pages, set it to skip the cache for visitors who send the wpcyt_theme cookie, or visitors may be shown each other's theme."
+msgstr "Um cache de páginas serve a mesma cópia de uma página para todos. Se um plugin de cache ou a sua hospedagem armazena páginas, configure-o para ignorar o cache dos visitantes que enviam o cookie wpcyt_theme, ou os visitantes poderão ver o tema uns dos outros."
