@@ -54,10 +54,9 @@ A page cache keeps one copy of a page and serves it to everyone, so it can serve
 
 ## Screenshots
 
-1. Appearance › WP Choose Your Theme: the installed themes with their allowed state, kind (block or classic) and the cookie lifetime
-2. The front end with the dropdown (menu mode) in a sidebar, showing the visitor's chosen theme
-3. The list mode: a list of theme links with the current one highlighted
-4. The "Choose Your Theme" widget form in Appearance › Widgets, with its title and mode
+1. Appearance › WP Choose Your Theme: the installed themes, their kind and whether visitors may choose them, and how long the choice is remembered
+2. A visitor switched to Twenty Twenty-Four with the dropdown (menu mode, through the shortcode)
+3. List mode: a link to every theme visitors may choose
 
 ## FAQ
 
@@ -68,7 +67,7 @@ No. The active theme stays what it is, for you and for every visitor who does no
 Your active theme, plus the installed themes you ticked in Appearance › WP Choose Your Theme, that have no errors and are of the same kind (block or classic) as the active one. If that leaves only one theme, the switcher shows nothing.
 
 = 3. A visitor picked a theme and sees an empty sidebar or no menu. =
-Widgets, menus and Customizer settings belong to a theme. A theme that has never been set up on your site starts with none. Activate it once, set it up, and activate your own theme back; or assign its widget areas and menus in the Customizer or the Site Editor.
+A visitor sees the chosen theme with that theme's own settings: its Customizer options (logo, colours, header) and its menu locations, exactly as if it were active. A theme that has never been set up on your site has none yet, so it starts with the theme's defaults and no menu assigned. Set it up once: activate it, configure it, and activate your own theme back. Widgets are shared by name: a widget area that has the same ID in both themes shows the same widgets.
 
 = 4. Can visitors pick a block theme on a classic site, or the other way round? =
 Not by default, see "Safe by default". A developer can allow it with the `wp_chooseyourtheme_allow_mixed_kinds` filter, on their own tests: the two kinds do not share widget areas, and a block theme has no classic widget areas or template files to call the template tag from (the shortcode works in any post or page).
@@ -80,7 +79,7 @@ A page cache is serving a stored copy. See "Page caching" above.
 The folder name of the theme (for example `twentytwentyfive`) and nothing else, no identifier, no personal data. It is named `wpcyt_theme`.
 
 = 7. I used 0.x. What happens to my settings? =
-The first time 1.0 loads, every installed theme you had not hidden becomes an allowed theme. Visitors' old cookies (named `wpcyt_name`) are no longer read: each visitor picks again, once. The template tag `wp_chooseyourtheme()` and its three modes work as before.
+If 0.x had stored its settings on your site (it did when a wp-admin page first loaded after you activated it), the first time 1.0 loads every installed theme you had not hidden becomes an allowed theme. A site with no stored 0.x settings is treated as a new installation: only the active theme is offered until you tick others. Visitors' old cookies (named `wpcyt_name`) are no longer read: each visitor picks again, once. The template tag `wp_chooseyourtheme()` and its three modes work as before.
 
 = 8. Can I change how it looks? =
 The output has plain classes: `wpcyt_form`, `wpcyt_combo`, `wpcyt_submit`, `wpcyt_list`, `wpcyt_roll`, and on each list item the theme's name as a class, plus `selected` for the current one.
@@ -101,7 +100,7 @@ A rewrite of the plugin for current WordPress, on the [WP Bones](https://wpbones
 
 * The template tag `wp_chooseyourtheme()` and its modes `menu`, `list` and `roll`, with the same CSS classes (`wpcyt_combo`, `wpcyt_list`, `wpcyt_roll`, the theme name on each list item, `selected` on the current one)
 * Appearance › WP Choose Your Theme is still where you configure it
-* Your settings: every theme you had not hidden becomes an allowed theme the first time 1.0 loads
+* Your settings, if 0.x stored them: every theme you had not hidden becomes an allowed theme the first time 1.0 loads. A site without stored 0.x settings is treated as a new installation
 
 **What changed**
 
