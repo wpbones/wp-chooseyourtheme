@@ -15,6 +15,8 @@ Let your visitors choose which of your installed themes they see the site with: 
 
 WP Choose Your Theme lets a visitor pick the theme they see your site with, from the themes you installed and allowed. Their choice is remembered in their own browser; you, your other visitors and wp-admin keep using the active theme.
 
+https://www.youtube.com/watch?v=Nt8I_FS5hgI
+
 Documentation and source code: [github.com/wpbones/wp-chooseyourtheme](https://github.com/wpbones/wp-chooseyourtheme).
 
 Put the switcher where you want it, in four ways and three looks:

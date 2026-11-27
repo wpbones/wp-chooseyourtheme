@@ -21,6 +21,7 @@ Built on the [WPBones](https://wpbones.com) framework.
 
 ## Links
 
+- [WP Choose Your Theme in 18 seconds](https://www.youtube.com/watch?v=Nt8I_FS5hgI) (video)
 - [WordPress.org Plugin Page](https://wordpress.org/plugins/wp-chooseyourtheme/)
 - [Support Forum](https://wordpress.org/support/plugin/wp-chooseyourtheme/)
 - [Changelog](readme.txt#changelog)
